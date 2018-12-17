@@ -9,8 +9,12 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define MAMA
+//#define MAMA
 //#define PAPA
+
+// Mama and Papa ping testers to observe simple LoRa communications between boards
+#define MAMAPING
+//#define PAPAPING
 
 //To test the quackpack features comment MAMA/PAPA Definitions  and uncomment BOTH the MAMAQUACK and QUACK Definitions
 //#define MAMAQUACK
@@ -32,30 +36,43 @@ void setupSerial()
 #endif
 
 // Structure with message data
+//typedef struct
+//{
+//  String fping;
+//  String fname;
+//  String street;
+//  String phone;
+//  String occupants;
+//  String danger;
+//  String vacant;
+//  String firstaid;
+//  String water;
+//  String food;
+//  String msg;
+//} Data;
+//
+//byte fname_B      = 0xB1;
+//byte street_B     = 0xB2;
+//byte phone_B      = 0xB3;
+//byte occupants_B  = 0xB4;
+//byte danger_B     = 0xC1;
+//byte vacant_B     = 0xC2;
+//byte firstaid_B   = 0xD1;
+//byte water_B      = 0xD2;
+//byte food_B       = 0xD3;
+//byte msg_B        = 0xE4;
+
+/// Alternate structure for MAMAPING and PAPAPING, comment this out when not using the Ping tools and use the above data structure!
 typedef struct
 {
-  String fname;
-  String street;
-  String phone;
-  String occupants;
-  String danger;
-  String vacant;
-  String firstaid;
-  String water;
-  String food;
-  String msg;
+  String fping;
 } Data;
 
-byte fname_B      = 0xB1;
-byte street_B     = 0xB2;
-byte phone_B      = 0xB3;
-byte occupants_B  = 0xB4;
-byte danger_B     = 0xC1;
-byte vacant_B     = 0xC2;
-byte firstaid_B   = 0xD1;
-byte water_B      = 0xD2;
-byte food_B       = 0xD3;
-byte msg_B        = 0xE4;
+byte fping_B      = 0xB1;
+
+
+
+
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -88,5 +105,3 @@ void setupLoRa()
   //  LoRa.setSyncWord(0xF3);         // ranges from 0-0xFF, default 0x34
   LoRa.enableCrc();             // Activate crc
 }
-
-
