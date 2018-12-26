@@ -127,7 +127,7 @@ void receive(int packetSize)
         data.fping = readMessages(mLength);
       }
     }
-        showReceivedData();
+    showReceivedData();
   }
   else
   {
@@ -161,9 +161,9 @@ void showReceivedData()
 
     u8x8.clear();
     u8x8.setCursor(0, 0);
-    u8x8.print("Ping #: ");
-    u8x8.setCursor(9,0);
-    u8x8.print(data.fping);
+    u8x8.print("Ping Received");
+//    u8x8.setCursor(9,0);
+//    u8x8.print(data.fping);
 
   
     Serial.println("Ping Received #: " +  data.fping);
