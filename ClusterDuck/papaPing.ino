@@ -1,18 +1,4 @@
-// Copyright 2018 Bryan Knouse, Magus Pereira, Charlie Evans, Taraqur Rahman, Nick Feuer
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#ifdef PAPA
+#ifdef PAPAPING
 
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
@@ -55,8 +41,8 @@ void setup()
   setupLoRa();
   //setupWiFi();
 
-  Serial.println("PAPA Online");
-  u8x8.drawString(0, 1, "PAPA Online");
+  Serial.println("PAPA-Ping Online");
+  u8x8.drawString(0, 1, "PAPA-Ping Online");
 }
 
 /**
@@ -111,7 +97,7 @@ void loop()
   if (simulate != 1)
   {
     receive(LoRa.parsePacket());
-    jsonify(data);
+//    jsonify(data);
   }
   else
   {
@@ -136,49 +122,12 @@ void receive(int packetSize)
       byteCode = LoRa.read();
       mLength  = LoRa.read();
 
-      if (byteCode == fname_B)
+      if (byteCode == fping_B)
       {
-        data.fname = readMessages(mLength);
-      }
-      else if (byteCode == street_B)
-      {
-        data.street = readMessages(mLength);
-      }
-      else if (byteCode == phone_B)
-      {
-        data.phone = readMessages(mLength);
-      }
-      else if (byteCode == occupants_B)
-      {
-        data.occupants = readMessages(mLength);
-      }
-      else if (byteCode == danger_B)
-      {
-        data.danger = readMessages(mLength);
-      }
-      else if (byteCode == vacant_B)
-      {
-        data.vacant = readMessages(mLength);
-      }
-      else if (byteCode == firstaid_B)
-      {
-        data.firstaid = readMessages(mLength);
-      }
-      else if (byteCode == water_B)
-      {
-        data.water = readMessages(mLength);
-      }
-      else if (byteCode == food_B)
-      {
-        data.food = readMessages(mLength);
-      }
-      else if (byteCode == msg_B)
-      {
-        data.msg = readMessages(mLength);
+        data.fping = readMessages(mLength);
       }
     }
-        showReceivedData();
-    //    jsonify(data);
+    showReceivedData();
   }
   else
   {
@@ -211,23 +160,13 @@ void showReceivedData()
   String waiting = String(millis() - lastSendTime);
 
     u8x8.clear();
-    u8x8.drawString(0, 0, (data.fname).c_str());
-    u8x8.setCursor(0, 16);  u8x8.print("Phone: "   + data.phone);
-    u8x8.setCursor(0, 32);  u8x8.print("Message: "   + data.msg);
-    u8x8.setCursor(0, 48);  u8x8.print(waiting);
+    u8x8.setCursor(0, 0);
+    u8x8.print("Ping Received");
+//    u8x8.setCursor(9,0);
+//    u8x8.print(data.fping);
 
   
-    Serial.println("Name: "         +  data.fname     );
-    Serial.println("Street: "       +  data.street    );
-    Serial.println("Phone: "        +  data.phone     );
-    Serial.println("Occupants: "    +  data.occupants );
-    Serial.println("Dangers: "      +  data.danger    );
-    Serial.println("Vacant: "       +  data.vacant    );
-    Serial.println("First Aid: "    +  data.firstaid  );
-    Serial.println("Water: "        +  data.water     );
-    Serial.println("Food: "         +  data.food      );
-    Serial.println("Mess: "         +  data.msg       );
-    Serial.println("Time: "         +  waiting        );
+    Serial.println("Ping Received #: " +  data.fping);
 }
 
 /**
@@ -235,45 +174,45 @@ void showReceivedData()
    Serializes and Parses Data Struct Values into JSON
    @return JSON String
 */
-void jsonify(Data data)
-{
-  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
-  DynamicJsonBuffer jsonBuffer(bufferSize);
-
-  JsonObject& root = jsonBuffer.createObject();
-
-  JsonObject& civilian = root.createNestedObject("civilian");
-
-  JsonObject& civilian_info   = civilian.createNestedObject("info");
-  civilian_info["name"]       = data.fname;
-  civilian_info["phone"]      = data.phone;
-  civilian_info["location"]   = data.street;
-  civilian_info["occupants"]  = data.occupants;
-
-  JsonObject& civilian_status = civilian.createNestedObject("status");
-  civilian_status["danger"]   = data.danger;
-  civilian_status["vacant"]   = data.vacant ;
-
-  JsonObject& civilian_need   = civilian.createNestedObject("needs");
-  civilian_need["first-aid"]  = data.firstaid;
-  civilian_need["water"]      = data.water;
-  civilian_need["food"]       = data.food;
-  civilian["message"]         = data.msg;
-
-  String jsonData;
-  root.printTo(jsonData);
-
-//  if (client.publish(topic, jsonData.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
-}
+//void jsonify(Data data)
+//{
+//  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
+//  DynamicJsonBuffer jsonBuffer(bufferSize);
+//
+//  JsonObject& root = jsonBuffer.createObject();
+//
+//  JsonObject& civilian = root.createNestedObject("civilian");
+//
+//  JsonObject& civilian_info   = civilian.createNestedObject("info");
+//  civilian_info["name"]       = data.fname;
+//  civilian_info["phone"]      = data.phone;
+//  civilian_info["location"]   = data.street;
+//  civilian_info["occupants"]  = data.occupants;
+//
+//  JsonObject& civilian_status = civilian.createNestedObject("status");
+//  civilian_status["danger"]   = data.danger;
+//  civilian_status["vacant"]   = data.vacant ;
+//
+//  JsonObject& civilian_need   = civilian.createNestedObject("needs");
+//  civilian_need["first-aid"]  = data.firstaid;
+//  civilian_need["water"]      = data.water;
+//  civilian_need["food"]       = data.food;
+//  civilian["message"]         = data.msg;
+//
+//  String jsonData;
+//  root.printTo(jsonData);
+//
+////  if (client.publish(topic, jsonData.c_str()))
+////  {
+////    Serial.println("Publish ok");
+////    root.prettyPrintTo(Serial);
+////    Serial.println("");
+////  }
+////  else
+////  {
+////    Serial.println("Publish failed");
+////  }
+//}
 
 // Simulating Sending JSON Data to IoT Platform
 
