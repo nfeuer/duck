@@ -1,11 +1,11 @@
 // Copyright 2018 Bryan Knouse, Magus Pereira, Charlie Evans, Taraqur Rahman, Nick Feuer
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,8 +23,12 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define MAMA
+//#define MAMA
 //#define PAPA
+
+// Mama and Papa ping testers to observe simple LoRa communications between boards
+#define MAMAPING
+//#define PAPAPING
 
 //To test the quackpack features comment MAMA/PAPA Definitions  and uncomment BOTH the MAMAQUACK and QUACK Definitions
 //#define MAMAQUACK
@@ -46,30 +50,43 @@ void setupSerial()
 #endif
 
 // Structure with message data
+//typedef struct
+//{
+//  String fping;
+//  String fname;
+//  String street;
+//  String phone;
+//  String occupants;
+//  String danger;
+//  String vacant;
+//  String firstaid;
+//  String water;
+//  String food;
+//  String msg;
+//} Data;
+//
+//byte fname_B      = 0xB1;
+//byte street_B     = 0xB2;
+//byte phone_B      = 0xB3;
+//byte occupants_B  = 0xB4;
+//byte danger_B     = 0xC1;
+//byte vacant_B     = 0xC2;
+//byte firstaid_B   = 0xD1;
+//byte water_B      = 0xD2;
+//byte food_B       = 0xD3;
+//byte msg_B        = 0xE4;
+
+/// Alternate structure for MAMAPING and PAPAPING, comment this out when not using the Ping tools and use the above data structure!
 typedef struct
 {
-  String fname;
-  String street;
-  String phone;
-  String occupants;
-  String danger;
-  String vacant;
-  String firstaid;
-  String water;
-  String food;
-  String msg;
+  String fping;
 } Data;
 
-byte fname_B      = 0xB1;
-byte street_B     = 0xB2;
-byte phone_B      = 0xB3;
-byte occupants_B  = 0xB4;
-byte danger_B     = 0xC1;
-byte vacant_B     = 0xC2;
-byte firstaid_B   = 0xD1;
-byte water_B      = 0xD2;
-byte food_B       = 0xD3;
-byte msg_B        = 0xE4;
+byte fping_B      = 0xB1;
+
+
+
+
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);

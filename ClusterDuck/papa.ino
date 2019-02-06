@@ -1,11 +1,11 @@
 // Copyright 2018 Bryan Knouse, Magus Pereira, Charlie Evans, Taraqur Rahman, Nick Feuer
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,7 @@ void setup()
 
   setupDisplay();
   setupLoRa();
-  //setupWiFi();
+  setupWiFi();
 
   Serial.println("PAPA Online");
   u8x8.drawString(0, 1, "PAPA Online");
@@ -216,7 +216,7 @@ void showReceivedData()
     u8x8.setCursor(0, 32);  u8x8.print("Message: "   + data.msg);
     u8x8.setCursor(0, 48);  u8x8.print(waiting);
 
-  
+
     Serial.println("Name: "         +  data.fname     );
     Serial.println("Street: "       +  data.street    );
     Serial.println("Phone: "        +  data.phone     );

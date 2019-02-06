@@ -1,11 +1,11 @@
 // Copyright 2018 Bryan Knouse, Magus Pereira, Charlie Evans, Taraqur Rahman, Nick Feuer
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ const char MAIN_page[] PROGMEM = R"=====(
 </head>
 
 <body>
-  
+
   <style>
     body {
   --dark-color: black;
@@ -247,25 +247,25 @@ input[type="checkbox"]:checked + .label-choice:hover .sw:before {
         <!--   CURRENT STATUS -->
         <br><br><br><label class='label-section'>CURRENT STATUS *</label><br>
 
- 
-  
+
+
         <input type="hidden" name='danger' value="0"><input type="checkbox" class="cb" id="a" onclick="this.previousSibling.value=1-this.previousSibling.value">
   <label class='label-choice' for="a"><span class="sw"></span>Are you in immediate danger?</label>
-  
+
   <input type="hidden" name='vacant' value="0"><input type="checkbox" class="cb" id="b" onclick="this.previousSibling.value=1-this.previousSibling.value">
   <label class='label-choice' for="b"><span class="sw"></span>Is your house vacant?</label>
 
-      
+
 
         <!-- I NEED -->
         <br><br><label class='label-section'>I NEED</label><br>
 
         <input type="hidden" name='firstaid' value="0"><input type="checkbox" class="cb" id="c" onclick="this.previousSibling.value=1-this.previousSibling.value">
   <label class='label-choice' for="c"><span class="sw"></span>First Aid</label>
-  
+
   <input type="hidden" name='water' value="0"><input type="checkbox" class="cb" id="d" onclick="this.previousSibling.value=1-this.previousSibling.value">
   <label class='label-choice' for="d"><span class="sw"></span>Water</label>
-  
+
   <input type="hidden" name='food' value="0"><input type="checkbox" class="cb" id="e" onclick="this.previousSibling.value=1-this.previousSibling.value">
   <label class='label-choice' for="e"><span class="sw"></span>Food</label>
 
