@@ -23,8 +23,8 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define MAMA
-//#define PAPA
+//#define MAMA
+#define PAPAT
 
 //To test the quackpack features comment MAMA/PAPA Definitions  and uncomment BOTH the MAMAQUACK and QUACK Definitions
 //#define MAMAQUACK
