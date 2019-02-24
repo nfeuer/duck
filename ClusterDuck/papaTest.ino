@@ -18,6 +18,106 @@
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 
+//=======================
+#include <DNSServer.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include "index.h"
+
+IPAddress apIP(192, 168, 1, 1);
+WebServer webServer(80);
+
+DNSServer dnsServer;
+const byte DNS_PORT = 53;
+
+/**
+   Hotspot/Access Point (🐥 DuckLink 🆘 )
+   Local DNS (duck.local)
+*/
+const char *AP   = " 🆘 PAPA EMERGENCY PORTAL";
+
+const char *DNS  = "duck";
+
+String portal = MAIN_page;
+String id = "";
+int notNull = 0;
+
+/**
+   Tracer for debugging purposes
+   Toggle (trace = 1) to print statements in Serial
+   Toggle (trace = 0) to turn off statements
+*/
+int trace         = 0;
+
+byte msgCount     = 0;             // count of outgoing messages
+int interval      = 2000;          // interval between sends
+//long lastSendTime = 0;             // time of last packet send
+
+void setupPortal()
+{
+  WiFi.mode(WIFI_AP);
+  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+
+  WiFi.softAP(AP);
+  Serial.println("Created Hotspot");
+
+  dnsServer.start(DNS_PORT, "*", apIP);
+
+  webServer.onNotFound([]()
+  {
+    webServer.send(200, "text/html", portal);
+  });
+  webServer.begin();
+
+  if (!MDNS.begin(DNS))
+  {
+    Serial.println("Error setting up MDNS responder!");
+  }
+  else
+  {
+    Serial.println("Created local DNS");
+    MDNS.addService("http", "tcp", 80);
+  }
+}
+
+Data readData()
+{
+  Data victim;
+
+  if (id != webServer.arg(2))
+  {
+    u8x8.clear();
+    u8x8.drawString(0, 4, "New Response");
+
+//    for (int i = 0; i < webServer.args(); i++)
+//    {
+//      Serial.println(webServer.argName(i) + ": " + webServer.arg(i));
+//    }
+
+    victim.fname      = webServer.arg(0);
+    victim.street     = webServer.arg(1);
+    victim.phone      = webServer.arg(2);
+    victim.occupants  = webServer.arg(3);
+    victim.danger     = webServer.arg(4);
+    victim.vacant     = webServer.arg(5);
+    victim.firstaid   = webServer.arg(6);
+    victim.water      = webServer.arg(7);
+    victim.food       = webServer.arg(8);
+    victim.msg        = webServer.arg(9);
+
+
+    u8x8.setCursor(0, 16);
+    u8x8.print("Name: " + victim.fname);
+
+    //    Serial.println(victim.id + " " + victim.fname + " " + victim.phone + " " + victim.msg + "\n");
+  }
+  
+  jsonify(victim);
+  id = webServer.arg(2);
+  return victim;
+}
+//=======================
+
 #define SSID        "nick_owl" // Type your SSID
 #define PASSWORD    "dd21643da814" // Type your Password
 
@@ -44,7 +144,7 @@ long lastSendTime = 0;
 Data data;
 
 // Simulate MQTT
-int simulate = 1;
+int simulate = 0;
 
 void setup()
 {
@@ -53,8 +153,9 @@ void setup()
 
   setupDisplay();
   setupLoRa();
+  setupPortal();
   setupWiFi();
-
+  
   Serial.println("PAPA Online");
   u8x8.drawString(0, 1, "PAPA Online");
 }
@@ -107,11 +208,22 @@ void setupMQTT()
 void loop()
 {
   setupMQTT();
+  
+  dnsServer.processNextRequest();
+  webServer.handleClient();
 
+  // ⚠️ Parses Civilian Requests into Data Structure
+  if(webServer.args() > 0) {
+    if(webServer.arg("phone") =! 0) {
+      if(id =! webServer.arg("phone")) {
+        data = readData();
+      }
+    }
+  }
+  
   if (simulate != 1)
   {
     receive(LoRa.parsePacket());
-    jsonify(data);
   }
   else
   {
@@ -178,7 +290,7 @@ void receive(int packetSize)
       }
     }
         showReceivedData();
-    //    jsonify(data);
+        //jsonify(data);
   }
   else
   {
@@ -263,16 +375,20 @@ void jsonify(Data data)
   String jsonData;
   root.printTo(jsonData);
 
-//  if (client.publish(topic, jsonData.c_str()))
-//  {
+  if (client.publish(topic, jsonData.c_str()))
+  {
+    Serial.println("Publish ok");
+    root.prettyPrintTo(Serial);
+    Serial.println("");
+  }
+  else
+  {
+    Serial.println("Publish failed");
+  }
+    
 //    Serial.println("Publish ok");
 //    root.prettyPrintTo(Serial);
 //    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
 }
 
 // Simulating Sending JSON Data to IoT Platform
@@ -315,16 +431,16 @@ void jsonSimulation()
   root.printTo(jsonData);
   root.prettyPrintTo(Serial);
 
-  if (client.publish(topic, jsonData.c_str()))
-  {
-    Serial.println("Publish ok");
-    root.prettyPrintTo(Serial);
-    Serial.println("");
-  }
-  else
-  {
-    Serial.println("Publish failed");
-  }
+//  if (client.publish(topic, jsonData.c_str()))
+//  {
+//    Serial.println("Publish ok");
+//    root.prettyPrintTo(Serial);
+//    Serial.println("");
+//  }
+//  else
+//  {
+//    Serial.println("Publish failed");
+//  }
 
   delay(10000);
 }

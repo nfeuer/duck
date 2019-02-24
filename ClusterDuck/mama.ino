@@ -29,7 +29,7 @@ const byte DNS_PORT = 53;
    Hotspot/Access Point (🐥 DuckLink 🆘 )
    Local DNS (duck.local)
 */
-const char *AP   = " 🆘 EMERGENCY PORTAL";
+const char *AP   = " 🆘 MAMA EMERGENCY PORTAL";
 
 const char *DNS  = "duck";
 
