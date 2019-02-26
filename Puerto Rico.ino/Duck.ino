@@ -180,8 +180,6 @@ void readData()
 
   //Serial.println("Tracer -- ID: " + id + " Webserver: " + webServer.arg(0));
 
-  String webId =
-
   if (id != webServer.arg(0))
   {
     u8x8.clear();
