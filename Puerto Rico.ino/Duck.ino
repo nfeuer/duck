@@ -37,7 +37,7 @@ const byte DNS_PORT = 53;
    Hotspot/Access Point (🐥 DuckLink 🆘 )
    Local DNS (duck.local)
 */
-const char *AP   = "🆘 EMERGENCY PORTAL";
+const char *AP   = " 🆘 EMERGENCY PORTAL";
 
 const char *DNS  = "duck";
 
@@ -180,7 +180,9 @@ void readData()
 
   //Serial.println("Tracer -- ID: " + id + " Webserver: " + webServer.arg(0));
 
-  if (id != webServer.arg(0))
+  String webId = webServer.arg(0);
+
+  if (id != webId)
   {
     u8x8.clear();
     u8x8.drawString(0, 4, "New Response");
@@ -205,11 +207,11 @@ void readData()
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
 
-    Serial.println("ID 1: " + id + " Webserver: " + webServer.arg(0));
+    Serial.println("Before____ID: " + id + " Webserver: " + webServer.arg(0));
 
-    id = webServer.arg(0);
+    id = webId;
 
-    Serial.println("ID 2: " + id + " Webserver: " + webServer.arg(0));
+    Serial.println("After_____ID: " + id + " Webserver: " + webServer.arg(0));
 
 
   }
@@ -283,15 +285,15 @@ void sendDuckStat(Data offline)
 void setupDuck()
 {
   offline.whoAmI   = iAm;
-  offline.duckID   = WiFi.macAddress();
+  offline.duckID   = duckID();
   offline.whereAmI = "0,0"; // Until further dev, default is null island
   offline.runTime  = millis();
 
   // Test - Print to serial
-  //  Serial.println("Class: "        +  offline.whoAmI     );
-  //  Serial.println("ID : "          +  offline.duckID    );
-  //  Serial.println("Location: "     +  offline.whereAmI     );
-  //  Serial.println("On for: "       +  offline.runTime + " milliseconds\n\n" );
+  Serial.println("Class: "        +  offline.whoAmI     );
+  Serial.println("ID : "          +  offline.duckID    );
+  Serial.println("Location: "     +  offline.whereAmI     );
+  Serial.println("On for: "       +  offline.runTime + " milliseconds\n\n" );
 }
 
 
@@ -424,4 +426,21 @@ void showReceivedData()
   Serial.println("Food: "         +  offline.food      );
   Serial.println("Mess: "         +  offline.msg       );
   Serial.println("Time: "         +  waiting + " milliseconds\n");
+}
+
+String duckID()
+{
+  char id1[15];
+  char id2[15];
+
+  uint64_t chipid = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
+  uint16_t chip = (uint16_t)(chipid >> 32);
+
+  snprintf(id1, 15, "%04X", chip);
+  snprintf(id2, 15, "%08X", (uint32_t)chipid);
+
+  String ID1 = id1;
+  String ID2 = id2;
+
+  return ID1 + ID2;
 }
