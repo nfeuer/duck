@@ -36,7 +36,11 @@ void setup()
 
   setupDisplay();
   setupLoRa();
+
+
   setupWiFi();
+
+  delay(15000);
 
   setupPortal(); // Test
 
@@ -90,7 +94,7 @@ void setupMQTT()
 
 void loop()
 {
-  setupMQTT();
+  //setupMQTT();
 
   // Handles Captive Portal Requests
   dnsServer.processNextRequest();
@@ -99,14 +103,14 @@ void loop()
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
 
-  if (offline.fromCiv == "yes" && offline.fname != "")
+  if (offline.fromCiv != "" && offline.fromCiv == "yes" && offline.fname != "")
   {
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv != "yes")
+  if (offline.fromCiv != "" && offline.fromCiv != "yes")
   {
     jsonify(offline);
     Serial.print("Parsing LoRa Data");

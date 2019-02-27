@@ -16,8 +16,8 @@
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
-//#define MD
-#define PD
+#define MD
+//#define PD
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -38,6 +38,9 @@ const byte DNS_PORT = 53;
    Local DNS (duck.local)
 */
 const char *AP   = " 🆘 EMERGENCY PORTAL";
+//const char *AP = " 🆘 EMERGENCY PORTAL DUCKLINK";
+//const char *AP = " 🆘 EMERGENCY PORTAL MAMA";;
+//const char *AP = " 🆘 EMERGENCY PORTAL PAPA";
 
 const char *DNS  = "duck";
 
