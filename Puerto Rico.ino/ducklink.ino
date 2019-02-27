@@ -26,7 +26,7 @@ void loop()
   //offline = 
   readData();
 
-  if (offline.phone != "")
+  if (offline.fromCiv == "yes" && offline.fname != "")
   {
     sendPayload(offline);
     showReceivedData();
