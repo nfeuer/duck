@@ -24,7 +24,7 @@ void loop()
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (offline.fromCiv == "yes")
+  if (offline.fromCiv == "yes" && offline.fname != "")
   {
     sendPayload(offline);
     Serial.print("Sending Wifi Data");
