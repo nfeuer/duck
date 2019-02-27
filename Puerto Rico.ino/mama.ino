@@ -23,7 +23,7 @@ void loop()
   webServer.handleClient();
 
   // ⚠️ Parses Civilian Requests into Data Structure
-  offline = readData();
+  readData();
   if (offline.fromCiv == "yes")
   {
     sendPayload(offline);
