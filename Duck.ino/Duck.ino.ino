@@ -15,9 +15,9 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define DL
+//#define DL
 //#define MD
-//#define PD
+#define PD
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -37,7 +37,7 @@ const byte DNS_PORT = 53;
    Hotspot/Access Point (🐥 DuckLink 🆘 )
    Local DNS (duck.local)
 */
-const char *AP   = "🆘 EMERGENCY PORTAL";
+const char *AP   = " 🆘 EMERGENCY PORTAL";
 
 const char *DNS  = "duck";
 
@@ -180,7 +180,9 @@ void readData()
 
   //Serial.println("Tracer -- ID: " + id + " Webserver: " + webServer.arg(0));
 
-  if (id != webServer.arg(0))
+  String webId = webServer.arg(0);
+
+  if (id != webId)
   {
     u8x8.clear();
     u8x8.drawString(0, 4, "New Response");
@@ -205,11 +207,11 @@ void readData()
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
 
-    Serial.println("ID 1: " + id + " Webserver: " + webServer.arg(0));
+    Serial.println("Before____ID: " + id + " Webserver: " + webServer.arg(0));
 
-    id = webServer.arg(0);
+    id = webId;
 
-    Serial.println("ID 2: " + id + " Webserver: " + webServer.arg(0));
+    Serial.println("After_____ID: " + id + " Webserver: " + webServer.arg(0));
 
 
   }
