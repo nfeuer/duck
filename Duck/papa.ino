@@ -27,10 +27,11 @@ PubSubClient client(server, 8883, wifiClient);
 
 void setup()
 {
+  Serial.begin(115200);
+
   iAm = "Papa";
   setupDuck();
 
-  Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
 
   setupDisplay();

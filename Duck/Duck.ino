@@ -16,8 +16,8 @@
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
-#define MD
-//#define PD
+//#define MD
+#define PD
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;

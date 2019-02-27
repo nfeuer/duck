@@ -27,7 +27,7 @@ void loop()
   if (offline.fromCiv != "" && offline.fromCiv == "yes" && offline.fname != "")
   {
     sendPayload(offline);
-    Serial.print("Sending Wifi Data");
+    Serial.print("Sending Wifi Data from Mama\n");
   }
 
   receive(LoRa.parsePacket());
