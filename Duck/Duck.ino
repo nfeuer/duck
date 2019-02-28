@@ -15,11 +15,11 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-//#define DL
-//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+#define DL
+const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
 //const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
@@ -90,6 +90,7 @@ typedef struct
 } Data;
 
 Data offline;
+Data empty;
 
 byte whoAmI_B     = 0xA1;
 byte duckID_B     = 0xA2;
@@ -238,7 +239,7 @@ void sendPayload(Data offline)
   couple(whereAmI_B, offline.whereAmI);
   couple(runTime_B, offline.runTime);
 
-  couple(fromCiv_B, 0);
+  //couple(fromCiv_B, 0);
 
   couple(fname_B, offline.fname);
   couple(street_B, offline.street);
@@ -270,15 +271,15 @@ void couple(byte byteCode, String outgoing)
   //   Serial.println("Parameter: " + outgoing);
 }
 
-void couple(byte byteCode, int outgoing)
-{
-  LoRa.write(byteCode);               // add byteCode
-  LoRa.write(1);      // add payload length
-  LoRa.print(outgoing);               // add payload
-
-  //   Displays Sent Data on OLED and Serial Monitor
-  //   Serial.println("Parameter: " + outgoing);
-}
+//void couple(byte byteCode, int outgoing)
+//{
+//  LoRa.write(byteCode);               // add byteCode
+//  LoRa.write(1);      // add payload length
+//  LoRa.print(outgoing);               // add payload
+//
+//  //   Displays Sent Data on OLED and Serial Monitor
+//  //   Serial.println("Parameter: " + outgoing);
+//}
 
 //Send duckStat every 30 minutes
 void sendDuckStat(Data offline)
@@ -350,7 +351,7 @@ void receive(int packetSize)
       }
       else if (byteCode == fromCiv_B)
       {
-        offline.fromCiv = (int)LoRa.read();
+        offline.fromCiv = 0;
       }
       else if (byteCode == fname_B)
       {
@@ -410,6 +411,8 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
+  Serial.println(incoming);
+  
   return incoming;
 }
 
