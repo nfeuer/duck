@@ -18,11 +18,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -74,7 +74,7 @@ typedef struct
   String runTime;  // How long have I been on?
 
   // Check to see if message is from Civilian or Duck
-  String fromCiv;
+  int fromCiv= 0;
 
   // Civilian
   String fname;
@@ -198,7 +198,7 @@ void readData()
     //      Serial.println(webServer.argName(i) + ": " + webServer.arg(i));
     //    }
 
-    offline.fromCiv    = "yes";
+    offline.fromCiv    = 1;
     offline.fname      = webServer.arg(1);
     offline.street     = webServer.arg(2);
     offline.phone      = webServer.arg(3);
@@ -218,7 +218,7 @@ void readData()
     id = webId;
 
     Serial.println("After_____ID: " + id + " Webserver: " + webServer.arg(0));
-
+    showReceivedData();
 
   }
   //  return offlineA;
@@ -238,7 +238,7 @@ void sendPayload(Data offline)
   couple(whereAmI_B, offline.whereAmI);
   couple(runTime_B, offline.runTime);
 
-  couple(fromCiv_B, "no");
+  couple(fromCiv_B, 0);
 
   couple(fname_B, offline.fname);
   couple(street_B, offline.street);
@@ -264,6 +264,16 @@ void couple(byte byteCode, String outgoing)
 {
   LoRa.write(byteCode);               // add byteCode
   LoRa.write(outgoing.length());      // add payload length
+  LoRa.print(outgoing);               // add payload
+
+  //   Displays Sent Data on OLED and Serial Monitor
+  //   Serial.println("Parameter: " + outgoing);
+}
+
+void couple(byte byteCode, int outgoing)
+{
+  LoRa.write(byteCode);               // add byteCode
+  LoRa.write(1);      // add payload length
   LoRa.print(outgoing);               // add payload
 
   //   Displays Sent Data on OLED and Serial Monitor
@@ -315,7 +325,7 @@ void receive(int packetSize)
   if (packetSize != 0)
   {
     byte byteCode, mLength;
-
+    Serial.print("Packet Received");
     // read packet
     while (LoRa.available())
     {
@@ -340,7 +350,7 @@ void receive(int packetSize)
       }
       else if (byteCode == fromCiv_B)
       {
-        offline.fromCiv = readMessages(mLength);
+        offline.fromCiv = (int)LoRa.read();
       }
       else if (byteCode == fname_B)
       {
@@ -432,6 +442,9 @@ void showReceivedData()
   Serial.println("Food: "         +  offline.food      );
   Serial.println("Mess: "         +  offline.msg       );
   Serial.println("Time: "         +  waiting + " milliseconds\n");
+
+  Serial.print("FromCiv: ");
+  Serial.println(offline.fromCiv    );
 }
 
 String duckID()

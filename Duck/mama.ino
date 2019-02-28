@@ -24,21 +24,22 @@ void loop()
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (offline.fromCiv != "" && offline.fromCiv == "yes" && offline.fname != "")
+  if (offline.fromCiv== 1 && offline.fname != NULL && offline.fname != "")
   {
+    Serial.println("Start Send");
     sendPayload(offline);
     Serial.print("Sending Wifi Data from Mama\n");
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv != "" && offline.fromCiv == "yes")
+  if (offline.fromCiv== 0 && offline.fname != NULL && offline.fname != "")
   {
     sendPayload(offline);
     Serial.print("I'm here");
   }
 
   // Sends Duck Stat every 30 minutes
-  sendDuckStat(offline);
+  //sendDuckStat(offline);
 }
 
 #endif

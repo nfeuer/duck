@@ -101,14 +101,14 @@ void loop()
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
 
-  if (offline.fromCiv != "" && offline.fromCiv == "yes" && offline.fname != "")
+  if (!offline.fromCiv && offline.fromCiv == "yes" && !offline.fname)
   {
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv != "" && offline.fromCiv == "yes")
+  if (!offline.fromCiv && offline.fromCiv == "yes")
   {
     jsonify(offline);
     Serial.print("Parsing LoRa Data");
