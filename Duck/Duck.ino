@@ -16,8 +16,13 @@
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
-#define MD
-//#define PD
+//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+
+#define PD
+const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -37,10 +42,8 @@ const byte DNS_PORT = 53;
    Hotspot/Access Point (🐥 DuckLink 🆘 )
    Local DNS (duck.local)
 */
-const char *AP   = " 🆘 EMERGENCY PORTAL";
-//const char *AP = " 🆘 EMERGENCY PORTAL DUCKLINK";
-//const char *AP = " 🆘 EMERGENCY PORTAL MAMA";;
-//const char *AP = " 🆘 EMERGENCY PORTAL PAPA";
+//const char *AP   = " 🆘 EMERGENCY PORTAL";
+
 
 const char *DNS  = "duck";
 

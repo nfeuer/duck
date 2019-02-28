@@ -31,7 +31,7 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv != "" && offline.fromCiv != "yes")
+  if (offline.fromCiv != "" && offline.fromCiv == "yes")
   {
     sendPayload(offline);
     Serial.print("I'm here");

@@ -4,8 +4,8 @@
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 
-#define SSID        "" // Type your SSID
-#define PASSWORD    "" // Type your Password
+#define SSID        "MySpectrumWiFi6e-2G" // Type your SSID
+#define PASSWORD    "famousocean778" // Type your Password
 
 //#define MQTT_MAX_PACKET_SIZE 1000;
 
@@ -36,13 +36,11 @@ void setup()
 
   setupDisplay();
   setupLoRa();
-
+  setupPortal(); // Test
 
   setupWiFi();
 
-  delay(15000);
-
-  setupPortal(); // Test
+  //delay(15000);
 
   Serial.println("PAPA Online");
   u8x8.drawString(0, 1, "PAPA Online");
@@ -110,7 +108,7 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv != "" && offline.fromCiv != "yes")
+  if (offline.fromCiv != "" && offline.fromCiv == "yes")
   {
     jsonify(offline);
     Serial.print("Parsing LoRa Data");
