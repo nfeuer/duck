@@ -161,7 +161,7 @@ void showReceivedData()
 
     u8x8.clear();
     u8x8.setCursor(0, 0);
-    u8x8.print("Ping Received");
+    u8x8.print("Ping #: " +  data.fping);
 //    u8x8.setCursor(9,0);
 //    u8x8.print(data.fping);
 

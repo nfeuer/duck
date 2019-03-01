@@ -15,7 +15,6 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <LoRa.h>
-#include <WiFi.h>
 #include <U8x8lib.h>
 
 /***************************************************

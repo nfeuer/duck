@@ -5,6 +5,7 @@ void setup()
   Serial.begin(115200);
 
   iAm = "Mama";
+  empty.whoAmI = "Mama";
   setupDuck();
 
   setupDisplay();
@@ -38,7 +39,7 @@ void loop()
     delay(1000);
     sendPayload(offline);
     Serial.print("I'm here");
-    offline = empty;
+    //offline = empty;
   }
 
   // Sends Duck Stat every 30 minutes

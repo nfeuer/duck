@@ -30,7 +30,7 @@ void loop()
     Serial.println("Start send from DuckLink");
     sendPayload(offline);
   //showReceivedData();
-    offline = empty;
+    //offline = empty;
   }
   else
   {

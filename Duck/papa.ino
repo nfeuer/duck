@@ -4,17 +4,15 @@
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 
-#define SSID        "MySpectrumWiFi6e-2G" // Type your SSID
-#define PASSWORD    "famousocean778" // Type your Password
+#define SSID        "nick_owl" // Type your SSID
+#define PASSWORD    "dd21643da814" // Type your Password
 
 //#define MQTT_MAX_PACKET_SIZE 1000;
 
-#define ORG         "in6b6j"                  // "quickstart" or use your organisation
-#define DEVICE_ID   "Papa_PostCFC"
-#define DEVICE_TYPE "PapaDuck"                // your device type or not used for "quickstart"
-#define TOKEN       "_tR!Mf(eyQmR4DtHr)"      // your device token or not used for "quickstart"
-
-//-------- Customise the above values --------
+#define ORG         "spzzrw"                  // "quickstart" or use your organisation
+#define DEVICE_ID   "US_DUCK"
+#define DEVICE_TYPE "PAPA"                // your device type or not used for "quickstart"
+#define TOKEN       "a_7+DSf_Li5pIu0&y+"      // your device token or not used for "quickstart"#define SSID        "nick_owl" // Type your SSID
 
 char server[]           = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]            = "iot-2/evt/status/fmt/json";
@@ -24,6 +22,8 @@ char clientId[]         = "d:" ORG ":" DEVICE_TYPE ":" DEVICE_ID;
 
 WiFiClientSecure wifiClient;
 PubSubClient client(server, 8883, wifiClient);
+
+int simulate = 0;
 
 void setup()
 {
@@ -92,7 +92,7 @@ void setupMQTT()
 
 void loop()
 {
-  //setupMQTT();
+  setupMQTT();
 
   // Handles Captive Portal Requests
   dnsServer.processNextRequest();
@@ -101,16 +101,17 @@ void loop()
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
 
-  if (!offline.fromCiv && offline.fromCiv == "yes" && !offline.fname)
+  if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
   }
 
   receive(LoRa.parsePacket());
-  if (!offline.fromCiv && offline.fromCiv == "yes")
+  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
-    jsonify(offline);
+    //jsonify(offline);
+    u8x8.drawString(0, 4, "New Response");
     Serial.print("Parsing LoRa Data");
   }
 
@@ -159,6 +160,55 @@ void jsonify(Data offline)
   {
     Serial.println("Publish failed");
   }
+}
+
+void jsonSimulation()
+{
+  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
+  DynamicJsonBuffer jsonBuffer(4000);
+
+  JsonObject& root = jsonBuffer.createObject();
+
+  JsonObject& civilian = root.createNestedObject("civilian");
+
+  JsonObject& civilian_info   = civilian.createNestedObject("info");
+  civilian_info["name"]       = "John Doe";
+  civilian_info["phone"]      = random(1000000000, 9999999999);
+  civilian_info["location"]   = "2725 E 14th St";
+  civilian_info["occupants"]  = random(1, 10);
+
+  int danger = random(0, 2);
+  int vac    = 0;
+  if (danger == 0)
+  {
+    vac++;
+  }
+
+  JsonObject& civilian_status = civilian.createNestedObject("status");
+  civilian_status["danger"]   = danger;
+  civilian_status["vacant"]   = vac;
+
+  JsonObject& civilian_need   = civilian.createNestedObject("needs");
+  civilian_need["first-aid"]  = random(0, 2);
+  civilian_need["water"]      = random(0, 2);
+  civilian_need["food"]       = random(0, 2);
+  civilian["message"]         = "Please send help";
+
+  String jsonData;
+  root.printTo(jsonData);
+
+  if (client.publish(topic, jsonData.c_str()))
+  {
+    Serial.println("Publish ok");
+    root.prettyPrintTo(Serial);
+    Serial.println("");
+  }
+  else
+  {
+    Serial.println("Publish failed");
+  }
+
+  delay(10000);
 }
 
 #endif
