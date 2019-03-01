@@ -25,7 +25,7 @@ void loop()
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (offline.fromCiv== 1 && offline.phone != NULL && offline.phone != "")
+  if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
     Serial.println("Start Send");
     sendPayload(offline);
@@ -34,12 +34,13 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv== 0 && offline.phone != NULL && offline.phone != "")
+  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     delay(1000);
+    offline.whoAmI = "Mama+Duck";
     sendPayload(offline);
     Serial.print("I'm here");
-    //offline = empty;
+    offline = empty;
   }
 
   // Sends Duck Stat every 30 minutes

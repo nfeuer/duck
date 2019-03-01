@@ -100,19 +100,20 @@ void loop()
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-
   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
+    offline = empty;
   }
 
   receive(LoRa.parsePacket());
   if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
-    //jsonify(offline);
+    jsonify(offline);
     u8x8.drawString(0, 4, "New Response");
     Serial.print("Parsing LoRa Data");
+    offline = empty;
   }
 
 }

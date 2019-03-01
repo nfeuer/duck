@@ -74,7 +74,7 @@ typedef struct
   String runTime;  // How long have I been on?
 
   // Check to see if message is from Civilian or Duck
-  int fromCiv= 0;
+  int fromCiv = 0;
 
   // Civilian
   String fname;
@@ -302,9 +302,13 @@ void sendDuckStat(Data offline)
 void setupDuck()
 {
   offline.whoAmI   = iAm;
+  empty.whoAmI     = offline.whoAmI;
   offline.duckID   = duckID();
+  empty.duckID     = offline.duckID;
   offline.whereAmI = "0,0"; // Until further dev, default is null island
+  empty.whereAmI   = offline.whereAmI;
   offline.runTime  = millis();
+  empty.runTime    = millis();
 
   // Test - Print to serial
   Serial.println("Class: "        +  offline.whoAmI     );
@@ -411,7 +415,7 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-  Serial.println(incoming);
+  //Serial.println(incoming);
   
   return incoming;
 }
