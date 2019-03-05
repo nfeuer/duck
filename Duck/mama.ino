@@ -31,12 +31,12 @@ void loop()
     sendPayload(offline);
     Serial.print("Sending Wifi Data from Mama\n");
     offline = empty;
+    offline.fromCiv = 0;
   }
 
   receive(LoRa.parsePacket());
   if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
-    delay(1000);
     offline.whoAmI = "Mama+Duck";
     sendPayload(offline);
     Serial.print("I'm here");

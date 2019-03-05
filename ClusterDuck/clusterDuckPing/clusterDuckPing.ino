@@ -26,8 +26,8 @@
 //#define PAPA
 
 // Mama and Papa ping testers to observe simple LoRa communications between boards
-#define MAMAPING
-//#define PAPAPING
+//#define MAMAPING
+#define PAPAPING
 
 //To test the quackpack features comment MAMA/PAPA Definitions  and uncomment BOTH the MAMAQUACK and QUACK Definitions
 //#define MAMAQUACK

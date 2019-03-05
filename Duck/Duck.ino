@@ -22,7 +22,7 @@
 //const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 #define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+const char *AP = " 🆘 PAPA EMERGENCY PORTAL2";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -30,7 +30,7 @@ unsigned long rolltime = millis() + THIRTYMIN;
 #define SS      18
 #define RST     14
 #define DI0     26
-#define BAND    915E6
+#define BAND    915E6 
 
 IPAddress apIP(192, 168, 1, 1);
 WebServer webServer(80);

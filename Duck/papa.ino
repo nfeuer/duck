@@ -9,10 +9,10 @@
 
 //#define MQTT_MAX_PACKET_SIZE 1000;
 
-#define ORG         "spzzrw"                  // "quickstart" or use your organisation
-#define DEVICE_ID   "US_DUCK"
-#define DEVICE_TYPE "PAPA"                // your device type or not used for "quickstart"
-#define TOKEN       "a_7+DSf_Li5pIu0&y+"      // your device token or not used for "quickstart"#define SSID        "nick_owl" // Type your SSID
+#define ORG         "zoad0c"                  // "quickstart" or use your organisation
+#define DEVICE_ID   "puerto-rico-papa-duck"
+#define DEVICE_TYPE "papa-duck"                // your device type or not used for "quickstart"
+#define TOKEN       "rN52(-Ey_28mXmVHgR"      // your device token or not used for "quickstart"#define SSID        "nick_owl" // Type your SSID
 
 char server[]           = ORG ".messaging.internetofthings.ibmcloud.com";
 char topic[]            = "iot-2/evt/status/fmt/json";
@@ -105,6 +105,7 @@ void loop()
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
     offline = empty;
+    offline.fromCiv = 0;
   }
 
   receive(LoRa.parsePacket());
@@ -116,6 +117,10 @@ void loop()
     offline = empty;
   }
 
+  if(simulate == 1) {
+    jsonSimulation();
+  }
+
 }
 
 /**
@@ -125,10 +130,18 @@ void loop()
 */
 void jsonify(Data offline)
 {
-  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
+  const int bufferSize = 2 * JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 3 * JSON_OBJECT_SIZE(4);
   DynamicJsonBuffer jsonBuffer(bufferSize);
 
   JsonObject& root = jsonBuffer.createObject();
+
+  JsonObject& bot = root.createNestedObject("bot");
+
+  JsonObject& bot_info = bot.createNestedObject("info");
+  bot_info["whoAmI"] = offline.whoAmI;
+  bot_info["duckID"] = offline.duckID;
+  bot_info["whereAmI"] = offline.whereAmI;
+  bot_info["runTime"] = offline.runTime;
 
   JsonObject& civilian = root.createNestedObject("civilian");
 

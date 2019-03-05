@@ -1,14 +1,14 @@
 #ifdef MAMAPING
 
-#include <DNSServer.h>
-#include <WebServer.h>
-#include <ESPmDNS.h>
-#include "index.h"
+//#include <DNSServer.h>
+//#include <WebServer.h>
+//#include <ESPmDNS.h>
+//#include "index.h"
 
 IPAddress apIP(192, 168, 1, 1);
-WebServer webServer(80);
+//WebServer webServer(80);
 
-DNSServer dnsServer;
+//DNSServer dnsServer;
 const byte DNS_PORT = 53;
 
 /**
@@ -20,7 +20,7 @@ const char *AP   = " 🆘 EMERGENCY PORTAL";
 
 const char *DNS  = "duck";
 
-String portal = MAIN_page;
+//String portal = MAIN_page;
 String id = "";
 
 /**
@@ -42,7 +42,7 @@ void setup()
 
   setupDisplay();
   setupLoRa();
-  setupPortal();
+  //setupPortal();
 
   Serial.println("MAMA-Ping Online");
   u8x8.drawString(0, 1, "MAMA-Ping Online");
@@ -55,32 +55,32 @@ void setup()
 //    Captive Portal
 //    Local DNS (duck.local)
 //*/
-void setupPortal()
-{
-  WiFi.mode(WIFI_AP);
-  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-
-  WiFi.softAP(AP);
-  Serial.println("Created Hotspot");
-
-  dnsServer.start(DNS_PORT, "*", apIP);
-
-  webServer.onNotFound([]()
-  {
-    webServer.send(200, "text/html", portal);
-  });
-  webServer.begin();
-
-  if (!MDNS.begin(DNS))
-  {
-    Serial.println("Error setting up MDNS responder!");
-  }
-  else
-  {
-    Serial.println("Created local DNS");
-    MDNS.addService("http", "tcp", 80);
-  }
-}
+//void setupPortal()
+//{
+//  WiFi.mode(WIFI_AP);
+//  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+//
+//  WiFi.softAP(AP);
+//  Serial.println("Created Hotspot");
+//
+//  dnsServer.start(DNS_PORT, "*", apIP);
+//
+//  webServer.onNotFound([]()
+//  {
+//    webServer.send(200, "text/html", portal);
+//  });
+//  webServer.begin();
+//
+//  if (!MDNS.begin(DNS))
+//  {
+//    Serial.println("Error setting up MDNS responder!");
+//  }
+//  else
+//  {
+//    Serial.println("Created local DNS");
+//    MDNS.addService("http", "tcp", 80);
+//  }
+//}
 
 void loop()
 {
@@ -145,14 +145,14 @@ void loop()
    Reads WebServer Parameters and Parses into Data Struct
    @return Parsed Data Struct
 */
-Data readData()
-{
-  Data victim;
-
-  victim.fping = webServer.arg(0);
-
-  return victim;
-}
+//Data readData()
+//{
+//  Data victim;
+//
+//  victim.fping = webServer.arg(0);
+//
+//  return victim;
+//}
 
 /**
    sendPayload
