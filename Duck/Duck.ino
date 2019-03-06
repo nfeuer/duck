@@ -18,11 +18,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL2";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL2";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -87,6 +87,7 @@ typedef struct
   String water;
   String food;
   String msg;
+  String path;
 } Data;
 
 Data offline;
@@ -109,6 +110,8 @@ byte firstaid_B   = 0xD1;
 byte water_B      = 0xD2;
 byte food_B       = 0xD3;
 byte msg_B        = 0xE4;
+
+byte path_B       = 0xF3;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -210,6 +213,7 @@ void readData()
     offline.water      = webServer.arg(8);
     offline.food       = webServer.arg(9);
     offline.msg        = webServer.arg(10);
+    offline.path       = "," + empty.duckID;
 
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
@@ -254,6 +258,7 @@ void sendPayload(Data offline)
   couple(food_B, offline.food);
 
   couple(msg_B, offline.msg);
+  couple(path_B, offline.path);
   LoRa.endPacket();
 
   msgCount++;                                   // increment message ID
@@ -397,6 +402,11 @@ void receive(int packetSize)
       {
         offline.msg = readMessages(mLength);
       }
+      else if (byteCode == path_B)
+      {
+        offline.path = readMessages(mLength);
+        offline.path = offline.path + "," + empty.duckID;
+      }
     }
     showReceivedData();
     //jsonify(offline);
@@ -449,6 +459,8 @@ void showReceivedData()
   Serial.println("Food: "         +  offline.food      );
   Serial.println("Mess: "         +  offline.msg       );
   Serial.println("Time: "         +  waiting + " milliseconds\n");
+
+  Serial.println("Path: "         +  offline.path      );
 
   Serial.print("FromCiv: ");
   Serial.println(offline.fromCiv    );

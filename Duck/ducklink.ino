@@ -28,6 +28,7 @@ void loop()
   if (offline.fromCiv == 1 && offline.fname != NULL && offline.fname != "")
   {
     Serial.println("Start send from DuckLink");
+    offline.duckID = duckID();
     sendPayload(offline);
   //showReceivedData();
     offline = empty;

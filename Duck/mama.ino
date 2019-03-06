@@ -38,6 +38,7 @@ void loop()
   if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     offline.whoAmI = "Mama+Duck";
+    delay(2000);
     sendPayload(offline);
     Serial.print("I'm here");
     offline = empty;
