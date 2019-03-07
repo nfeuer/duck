@@ -9,20 +9,21 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include "index.h"
+#include "credentials.h"
 
 /***************************************************
   un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-//#define DL
-//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+#define DL
+const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL2";
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -30,7 +31,7 @@ unsigned long rolltime = millis() + THIRTYMIN;
 #define SS      18
 #define RST     14
 #define DI0     26
-#define BAND    915E6 
+#define BAND    915E6
 
 IPAddress apIP(192, 168, 1, 1);
 WebServer webServer(80);
@@ -87,7 +88,6 @@ typedef struct
   String water;
   String food;
   String msg;
-  String path;
 } Data;
 
 Data offline;
@@ -110,8 +110,6 @@ byte firstaid_B   = 0xD1;
 byte water_B      = 0xD2;
 byte food_B       = 0xD3;
 byte msg_B        = 0xE4;
-
-byte path_B       = 0xF3;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -145,13 +143,6 @@ void setupLoRa()
   LoRa.enableCrc();             // Activate crc
 }
 
-///**
-//    setupPortal
-//    Creates:
-//    Hotspot (🐥 DuckLink 🆘 )
-//    Captive Portal
-//    Local DNS (duck.local)
-//*/
 void setupPortal()
 {
   WiFi.mode(WIFI_AP);
@@ -166,6 +157,18 @@ void setupPortal()
   {
     webServer.send(200, "text/html", portal);
   });
+
+  webServer.on("/id", []() {
+    webServer.send(200, "text/html", offline.duckID);
+  });
+
+  webServer.on("/mac", []() {
+    String    page = "<h1>Duck Mac Address</h1><h3>Data:</h3> <h4>" + offline.duckID + "</h4>";
+    webServer.send(200, "text/html", page);
+  });
+
+  webServer.on("/test", test2);
+
   webServer.begin();
 
   if (!MDNS.begin(DNS))
@@ -179,6 +182,74 @@ void setupPortal()
   }
 }
 
+void test1() {
+  char temp[400];
+  snprintf(temp, 400,
+
+           "<html>\
+  <head>\
+    <meta http-equiv='refresh' content='5'/>\
+    <title>ESP32 Demo</title>\
+    <style>\
+      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+    </style>\
+  </head>\
+  <body>\
+    <h1>Hello from ESP32!</h1>\
+    <input value=%d>\
+  </body>\
+</html>",
+
+           offline.duckID
+          );
+  webServer.send(200, "text/html", temp);
+}
+
+void test2() {
+  String page = "<body>";
+  page += "<input value=";
+  page += offline.duckID;
+  page += ">";
+  page += "</body>";
+
+  webServer.send(200, "text/plain", page);
+}
+
+void test() {
+  String message = "File Not Found\n\n";
+  message += "URI: ";
+  message += webServer.uri();
+  message += "\nMethod: ";
+  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += webServer.args();
+  message += "\n";
+
+  for (uint8_t i = 0; i < webServer.args(); i++) {
+    message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
+  }
+
+  webServer.send(200, "text/plain", message);
+}
+
+void handleNotFound()
+{
+  String message = "File Not Found\n\n";
+  message += "URI: ";
+  message += webServer.uri();
+  message += "\nMethod: ";
+  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += webServer.args();
+  message += "\n";
+
+  for (uint8_t i = 0; i < webServer.args(); i++) {
+    message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
+  }
+
+  webServer.send(404, "text/plain", message);
+}
+
 /**
    readyData
    Reads WebServer Parameters and couples into Data Struct
@@ -189,6 +260,10 @@ void readData()
   //  Data offlineA = offline;
 
   //Serial.println("Tracer -- ID: " + id + " Webserver: " + webServer.arg(0));
+
+  // Handles Captive Portal Requests
+  dnsServer.processNextRequest();
+  webServer.handleClient();
 
   String webId = webServer.arg(0);
 
@@ -213,7 +288,6 @@ void readData()
     offline.water      = webServer.arg(8);
     offline.food       = webServer.arg(9);
     offline.msg        = webServer.arg(10);
-    offline.path       = "," + empty.duckID;
 
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
@@ -258,7 +332,6 @@ void sendPayload(Data offline)
   couple(food_B, offline.food);
 
   couple(msg_B, offline.msg);
-  couple(path_B, offline.path);
   LoRa.endPacket();
 
   msgCount++;                                   // increment message ID
@@ -275,16 +348,6 @@ void couple(byte byteCode, String outgoing)
   //   Displays Sent Data on OLED and Serial Monitor
   //   Serial.println("Parameter: " + outgoing);
 }
-
-//void couple(byte byteCode, int outgoing)
-//{
-//  LoRa.write(byteCode);               // add byteCode
-//  LoRa.write(1);      // add payload length
-//  LoRa.print(outgoing);               // add payload
-//
-//  //   Displays Sent Data on OLED and Serial Monitor
-//  //   Serial.println("Parameter: " + outgoing);
-//}
 
 //Send duckStat every 30 minutes
 void sendDuckStat(Data offline)
@@ -307,19 +370,15 @@ void sendDuckStat(Data offline)
 void setupDuck()
 {
   offline.whoAmI   = iAm;
-  empty.whoAmI     = offline.whoAmI;
   offline.duckID   = duckID();
-  empty.duckID     = offline.duckID;
   offline.whereAmI = "0,0"; // Until further dev, default is null island
-  empty.whereAmI   = offline.whereAmI;
   offline.runTime  = millis();
-  empty.runTime    = millis();
 
   // Test - Print to serial
-  Serial.println("Class: "        +  offline.whoAmI     );
-  Serial.println("ID : "          +  offline.duckID    );
-  Serial.println("Location: "     +  offline.whereAmI     );
-  Serial.println("On for: "       +  offline.runTime + " milliseconds\n\n" );
+  Serial.println("\nClass: "        +  offline.whoAmI     );
+  Serial.println("ID : "            +  offline.duckID    );
+  Serial.println("Location: "       +  offline.whereAmI     );
+  Serial.println("On for: "         +  offline.runTime + " milliseconds\n\n" );
 }
 
 
@@ -402,11 +461,6 @@ void receive(int packetSize)
       {
         offline.msg = readMessages(mLength);
       }
-      else if (byteCode == path_B)
-      {
-        offline.path = readMessages(mLength);
-        offline.path = offline.path + "," + empty.duckID;
-      }
     }
     showReceivedData();
     //jsonify(offline);
@@ -425,8 +479,8 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-  //Serial.println(incoming);
-  
+  Serial.println(incoming);
+
   return incoming;
 }
 
@@ -459,8 +513,6 @@ void showReceivedData()
   Serial.println("Food: "         +  offline.food      );
   Serial.println("Mess: "         +  offline.msg       );
   Serial.println("Time: "         +  waiting + " milliseconds\n");
-
-  Serial.println("Path: "         +  offline.path      );
 
   Serial.print("FromCiv: ");
   Serial.println(offline.fromCiv    );

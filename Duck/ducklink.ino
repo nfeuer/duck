@@ -15,22 +15,15 @@ void setup()
   u8x8.drawString(0, 1, "Ducklink Online");
 }
 
-
 void loop()
 {
-  // Handles Captive Portal Requests
-  dnsServer.processNextRequest();
-  webServer.handleClient();
-
   // ⚠️ Parses Civilian Requests into Data Structure
-  //offline =
   readData();
-  if (offline.fromCiv == 1 && offline.fname != NULL && offline.fname != "")
+  if (offline.whoAmI == "Civ" && offline.fname != NULL && offline.fname != "")
   {
     Serial.println("Start send from DuckLink");
-    offline.duckID = duckID();
     sendPayload(offline);
-  //showReceivedData();
+    //showReceivedData();
     offline = empty;
     setupDuck();
   }
@@ -43,5 +36,4 @@ void loop()
   // Sends Duck Stat every 30 minutes
   sendDuckStat(offline);
 }
-
 #endif

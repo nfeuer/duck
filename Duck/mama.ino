@@ -5,7 +5,6 @@ void setup()
   Serial.begin(115200);
 
   iAm = "Mama";
-  empty.whoAmI = "Mama";
   setupDuck();
 
   setupDisplay();
@@ -16,29 +15,22 @@ void setup()
   u8x8.drawString(0, 1, "Mama Online");
 }
 
-
 void loop()
 {
-  // Handles Captive Portal Requests
-  dnsServer.processNextRequest();
-  webServer.handleClient();
-
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
+  if (offline.fromCiv== 1 && offline.phone != NULL && offline.phone != "")
   {
     Serial.println("Start Send");
     sendPayload(offline);
     Serial.print("Sending Wifi Data from Mama\n");
     offline = empty;
-    offline.fromCiv = 0;
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
+  if (offline.fromCiv== 0 && offline.phone != NULL && offline.phone != "")
   {
-    offline.whoAmI = "Mama+Duck";
-    delay(2000);
+    delay(1000);
     sendPayload(offline);
     Serial.print("I'm here");
     offline = empty;
