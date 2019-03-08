@@ -107,7 +107,7 @@ void jsonify(Data offline)
 
   JsonObject& root = jsonBuffer.createObject();
 
-  root["uid"]                 = offline.messageId;
+  root["uuid"]                 = offline.messageId;
 
   JsonObject& civilian = root.createNestedObject("civilian");
 

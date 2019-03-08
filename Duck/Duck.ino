@@ -283,16 +283,16 @@ void readData()
 
     offline.fromCiv    = 1;
     offline.messageId  = webServer.arg(0);
-    offline.fname      = webServer.arg(2);
-    offline.street     = webServer.arg(3);
-    offline.phone      = webServer.arg(4);
-    offline.occupants  = webServer.arg(5);
-    offline.danger     = webServer.arg(6);
-    offline.vacant     = webServer.arg(7);
-    offline.firstaid   = webServer.arg(8);
-    offline.water      = webServer.arg(9);
-    offline.food       = webServer.arg(10);
-    offline.msg        = webServer.arg(11);
+    offline.fname      = webServer.arg(1);
+    offline.street     = webServer.arg(2);
+    offline.phone      = webServer.arg(3);
+    offline.occupants  = webServer.arg(4);
+    offline.danger     = webServer.arg(5);
+    offline.vacant     = webServer.arg(6);
+    offline.firstaid   = webServer.arg(7);
+    offline.water      = webServer.arg(8);
+    offline.food       = webServer.arg(9);
+    offline.msg        = webServer.arg(10);
     offline.path       = "," + empty.duckID;
 
     u8x8.setCursor(0, 16);

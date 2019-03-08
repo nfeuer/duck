@@ -193,11 +193,10 @@ const char MAIN_page[] PROGMEM = R"=====(
                <!--         <label class='label-warning' style='font-size: 0.8em; line-height:1.5em'> Wolf: Potential threat that poses a danger to an unknown degree</label> -->
                <hr>
                <!--         Replaced unique id with phone number -->
-               <input type="hidden" name="ID" id="ID_UNIQUE" value="temp"/>
                
                <br><label class='label-section'>MY INFORMATION *</label>
                 
-               <input id='uuid' name='uuid' type='hidden' />
+               <input id='uuid' name='uuid' type='hidden' value="temp" />
                <input name='name' placeholder="Name"></input>
                <input name='street' placeholder="Street"></input>
                <input name="not_gonna_submit" disabled="disabled" value="City, State" />
@@ -276,7 +275,7 @@ const char MAIN_page[] PROGMEM = R"=====(
              for (var i = 0; i < 12; i++)
              text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-             document.getElementById("ID_UNIQUE").value = text;
+             document.getElementById("uuid").value = text;
 
              return text;
            }
