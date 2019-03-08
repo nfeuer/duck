@@ -19,7 +19,7 @@ void loop()
 {
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (offline.whoAmI == "Civ" && offline.fname != NULL && offline.fname != "")
+  if (offline.fromCiv == 1 && offline.fname != NULL && offline.fname != "")
   {
     Serial.println("Start send from DuckLink");
     sendPayload(offline);

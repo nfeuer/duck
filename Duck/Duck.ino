@@ -16,11 +16,11 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define DL
-const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+//#define DL
+//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
 //const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
@@ -76,7 +76,7 @@ typedef struct
 
   // Check to see if message is from Civilian or Duck
   int fromCiv = 0;
-
+  String messageId;
   // Civilian
   String fname;
   String street;
@@ -88,6 +88,7 @@ typedef struct
   String water;
   String food;
   String msg;
+  String path;
 } Data;
 
 Data offline;
@@ -110,6 +111,9 @@ byte firstaid_B   = 0xD1;
 byte water_B      = 0xD2;
 byte food_B       = 0xD3;
 byte msg_B        = 0xE4;
+
+byte msgId_B      = 0xF4;
+byte path_B       = 0xF3;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -278,16 +282,18 @@ void readData()
     //    }
 
     offline.fromCiv    = 1;
-    offline.fname      = webServer.arg(1);
-    offline.street     = webServer.arg(2);
-    offline.phone      = webServer.arg(3);
-    offline.occupants  = webServer.arg(4);
-    offline.danger     = webServer.arg(5);
-    offline.vacant     = webServer.arg(6);
-    offline.firstaid   = webServer.arg(7);
-    offline.water      = webServer.arg(8);
-    offline.food       = webServer.arg(9);
-    offline.msg        = webServer.arg(10);
+    offline.messageId  = webServer.arg(0);
+    offline.fname      = webServer.arg(2);
+    offline.street     = webServer.arg(3);
+    offline.phone      = webServer.arg(4);
+    offline.occupants  = webServer.arg(5);
+    offline.danger     = webServer.arg(6);
+    offline.vacant     = webServer.arg(7);
+    offline.firstaid   = webServer.arg(8);
+    offline.water      = webServer.arg(9);
+    offline.food       = webServer.arg(10);
+    offline.msg        = webServer.arg(11);
+    offline.path       = "," + empty.duckID;
 
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
@@ -312,6 +318,7 @@ void readData()
 void sendPayload(Data offline)
 {
   LoRa.beginPacket();
+  couple(msgId_B, offline.messageId);
   couple(whoAmI_B, offline.whoAmI);
   couple(duckID_B, offline.duckID);
   couple(whereAmI_B, offline.whereAmI);
@@ -332,6 +339,8 @@ void sendPayload(Data offline)
   couple(food_B, offline.food);
 
   couple(msg_B, offline.msg);
+
+  couple(path_B, offline.path);
   LoRa.endPacket();
 
   msgCount++;                                   // increment message ID
@@ -370,9 +379,13 @@ void sendDuckStat(Data offline)
 void setupDuck()
 {
   offline.whoAmI   = iAm;
+  empty.whoAmI     = offline.whoAmI;
   offline.duckID   = duckID();
+  empty.duckID     = offline.duckID;
   offline.whereAmI = "0,0"; // Until further dev, default is null island
+  empty.whereAmI   = offline.whereAmI;
   offline.runTime  = millis();
+  empty.runTime    = millis();
 
   // Test - Print to serial
   Serial.println("\nClass: "        +  offline.whoAmI     );
@@ -461,6 +474,15 @@ void receive(int packetSize)
       {
         offline.msg = readMessages(mLength);
       }
+      else if (byteCode == path_B)
+      {
+        offline.path = readMessages(mLength);
+        offline.path = offline.path + "," + empty.duckID;
+      }
+      else if (byteCode == msgId_B)
+      {
+        offline.messageId = readMessages(mLength);
+      }
     }
     showReceivedData();
     //jsonify(offline);
@@ -479,7 +501,7 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-  Serial.println(incoming);
+  //Serial.println(incoming);
 
   return incoming;
 }
@@ -501,6 +523,7 @@ void showReceivedData()
   Serial.println("ID : "          +  offline.duckID    );
   Serial.println("Location: "     +  offline.whereAmI     );
   Serial.println("On for: "       +  offline.runTime + " milliseconds\n" );
+  Serial.println("Message ID: "   +  offline.messageId );
 
   Serial.println("Name: "         +  offline.fname     );
   Serial.println("Street: "       +  offline.street    );
@@ -513,6 +536,8 @@ void showReceivedData()
   Serial.println("Food: "         +  offline.food      );
   Serial.println("Mess: "         +  offline.msg       );
   Serial.println("Time: "         +  waiting + " milliseconds\n");
+
+  Serial.println("Path: "         +  offline.path      );
 
   Serial.print("FromCiv: ");
   Serial.println(offline.fromCiv    );

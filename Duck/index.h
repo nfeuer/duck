@@ -193,7 +193,7 @@ const char MAIN_page[] PROGMEM = R"=====(
                <!--         <label class='label-warning' style='font-size: 0.8em; line-height:1.5em'> Wolf: Potential threat that poses a danger to an unknown degree</label> -->
                <hr>
                <!--         Replaced unique id with phone number -->
-               <!--         <input type="hidden" name="ID" id="ID_UNIQUE" /> -->
+               <input type="hidden" name="ID" id="ID_UNIQUE" value="temp"/>
                
                <br><label class='label-section'>MY INFORMATION *</label>
                 
@@ -239,9 +239,11 @@ const char MAIN_page[] PROGMEM = R"=====(
          numberize.onchange = function() {
            numberize.value = numberize.value.replace(/[^0-9]/g, '');
          }
+
          
          function loadPage() {
              var url = window.location.href;
+             var messageId = makeid();
          
              if(url.indexOf('name') > -1) {
                document.getElementById('page2').style = "display: block";
@@ -265,6 +267,18 @@ const char MAIN_page[] PROGMEM = R"=====(
          
            function goBack() {
              window.history.back();
+           }
+
+           function makeid() {
+             var text = "";
+             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+             for (var i = 0; i < 12; i++)
+             text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+             document.getElementById("ID_UNIQUE").value = text;
+
+             return text;
            }
       </script>
    </body>

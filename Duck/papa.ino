@@ -73,20 +73,24 @@ void setupMQTT()
 void loop()
 {
   setupMQTT();
+  
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
-  if (!offline.fromCiv && offline.fromCiv == "yes" && !offline.fname)
+  if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
     jsonify(offline);
     Serial.print("Parsing Wifi Data");
+    offline = empty;
+    offline.fromCiv = 0;
   }
 
   receive(LoRa.parsePacket());
-  if (!offline.fromCiv && offline.fromCiv == "yes")
+  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     jsonify(offline);
     duckData(offline);
     Serial.print("Parsing LoRa Data");
+    offline = empty;
   }
 
 }
@@ -102,6 +106,8 @@ void jsonify(Data offline)
   DynamicJsonBuffer jsonBuffer(bufferSize);
 
   JsonObject& root = jsonBuffer.createObject();
+
+  root["uid"]                 = offline.messageId;
 
   JsonObject& civilian = root.createNestedObject("civilian");
 
@@ -121,9 +127,22 @@ void jsonify(Data offline)
   civilian_need["food"]       = offline.food;
   civilian["message"]         = offline.msg;
 
+  root["path"]                = offline.path;
+
   String jsonstat;
   root.printTo(jsonstat);
-  publishData(jsonstat);
+  root.prettyPrintTo(Serial);
+  
+  if (client.publish(topic, jsonstat.c_str()))
+  {
+    Serial.println("Publish ok");
+    root.prettyPrintTo(Serial);
+    Serial.println("");
+  }
+  else
+  {
+    Serial.println("Publish failed");
+  }
 }
 
 void duckData(Data offline)
@@ -143,12 +162,8 @@ void duckData(Data offline)
 
   String jsonstat;
   root.printTo(jsonstat);
-  publishData(jsonstat);
-}
-
-void publishData(String data)
-{
-  if (client.publish(topic, data.c_str()))
+  
+  if (client.publish(topic, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
     root.prettyPrintTo(Serial);
@@ -159,5 +174,19 @@ void publishData(String data)
     Serial.println("Publish failed");
   }
 }
+
+//void publishData(String data)
+//{
+//  if (client.publish(topic, data.c_str()))
+//  {
+//    Serial.println("Publish ok");
+//    root.prettyPrintTo(Serial);
+//    Serial.println("");
+//  }
+//  else
+//  {
+//    Serial.println("Publish failed");
+//  }
+//}
 
 #endif
