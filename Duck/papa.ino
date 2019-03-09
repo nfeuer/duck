@@ -87,6 +87,8 @@ void loop()
   receive(LoRa.parsePacket());
   if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
+    offline.path = offline.path + "," + empty.duckID;
+    Serial.println(offline.path);
     jsonify(offline);
     duckData(offline);
     u8x8.setCursor(0, 16);
