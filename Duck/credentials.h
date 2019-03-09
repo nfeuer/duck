@@ -1,7 +1,5 @@
 // Please do not commit credentials to public GH
 
-// Please do not commit credentials to public GH
-
 #ifndef __CREDENTIALS_H__
 #define __CREDENTIALS_H__
 

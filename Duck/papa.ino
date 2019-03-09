@@ -89,6 +89,8 @@ void loop()
   {
     jsonify(offline);
     duckData(offline);
+    u8x8.setCursor(0, 16);
+    u8x8.print("Name: " + offline.fname);
     Serial.print("Parsing LoRa Data");
     offline = empty;
   }
@@ -151,6 +153,8 @@ void duckData(Data offline)
   DynamicJsonBuffer jsonBuffer(capacity);
 
   JsonObject& root = jsonBuffer.createObject();
+  root["uuid"]                   = makeId();
+  root["linked"]                 = offline.messageId;
 
   JsonArray& Duck_Data = root.createNestedArray("Duck Data");
 
@@ -163,7 +167,7 @@ void duckData(Data offline)
   String jsonstat;
   root.printTo(jsonstat);
   
-  if (client.publish(topic, jsonstat.c_str()))
+  if (client.publish(topic2, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
     root.prettyPrintTo(Serial);
@@ -173,6 +177,20 @@ void duckData(Data offline)
   {
     Serial.println("Publish failed");
   }
+}
+
+String makeId() {
+  char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+  char uuid[8];
+
+  for(int i = 0; i <= 7; i++) {
+    uuid[i] = items[random(0,35)];
+  }
+
+  String str = String(uuid);
+  
+  return  str;
+  
 }
 
 //void publishData(String data)

@@ -30,8 +30,9 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
+  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && !checkPath(offline.path, empty.duckID))
   {
+    offline.path = offline.path + "," + empty.duckID;
     offline.whoAmI = "Mama+Duck";
     delay(2000);
     sendPayload(offline);

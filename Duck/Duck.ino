@@ -19,11 +19,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-//#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+#define PD
+const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -293,7 +293,7 @@ void readData()
     offline.water      = webServer.arg(8);
     offline.food       = webServer.arg(9);
     offline.msg        = webServer.arg(10);
-    offline.path       = "," + empty.duckID;
+    offline.path       = empty.duckID;
 
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
@@ -477,7 +477,6 @@ void receive(int packetSize)
       else if (byteCode == path_B)
       {
         offline.path = readMessages(mLength);
-        offline.path = offline.path + "," + empty.duckID;
       }
       else if (byteCode == msgId_B)
       {
@@ -559,3 +558,24 @@ String duckID()
 
   return ID1 + ID2;
 }
+
+bool checkPath(String s1, String s2) 
+{ 
+  int M = s1.length(); 
+  int N = s2.length(); 
+  
+  /* A loop to slide pat[] one by one */
+  for (int i = 0; i <= N - M; i + 13) { 
+      int j; 
+  
+      /* For current index i, check for pattern match */
+      for (j = 0; j < M; j++) 
+        if (s2[i + j] != s1[j]) 
+          break; 
+  
+      if (j == M) 
+        return true; 
+  } 
+    
+  return false; 
+} 
