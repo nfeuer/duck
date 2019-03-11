@@ -4,7 +4,7 @@ void setup()
 {
   Serial.begin(115200);
 
-  iAm = "Ducklink";
+  iAm = "ducklink";
   setupDuck();
 
   setupDisplay();

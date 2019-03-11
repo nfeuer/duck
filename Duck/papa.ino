@@ -11,7 +11,7 @@ void setup()
 {
   Serial.begin(115200);
 
-  iAm = "Papa";
+  iAm = "papa-duck";
   setupDuck();
 
   pinMode(LED_BUILTIN, OUTPUT);

@@ -5,7 +5,7 @@ void setup()
   Serial.begin(115200);
 
   iAm = "Mama";
-  empty.whoAmI = "Mama";
+  empty.whoAmI = "mama-duck";
   setupDuck();
 
   setupDisplay();
@@ -33,10 +33,10 @@ void loop()
   //  strstr(offline.path.toCharArray, empty.duckID) != NULL
   if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf(empty.duckID) < 0) {
     offline.path = offline.path + "," + empty.duckID;
-    offline.whoAmI = "Mama+Duck";
-    delay(2000);
     sendPayload(offline);
     Serial.print("I'm here");
+    delay(random(0,2000));
+    sendPayload(offline);
     offline = empty;
   }
 

@@ -19,11 +19,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-//#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+#define PD
+const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -147,6 +147,53 @@ void setupLoRa()
   LoRa.enableCrc();             // Activate crc
 }
 
+void test2() {
+  String page = "<body>";
+  page += "<input value=";
+  page += offline.duckID;
+  page += ">";
+  page += "</body>";
+
+  webServer.send(200, "text/plain", page);
+}
+
+/**
+   showReceivedstat
+   Displays Received stat on OLED and Serial Monitor
+*/
+void showReceivedData()
+{
+  /**
+     The total time it took for PAPA to create a packet,
+     send it to MAMA. MAMA parsing victim requests, and
+     send it back to PAPA.
+  */
+  String waiting = String(millis() - lastSendTime);
+
+  Serial.println("Class: "        +  offline.whoAmI     );
+  Serial.println("ID : "          +  offline.duckID    );
+  Serial.println("Location: "     +  offline.whereAmI     );
+  Serial.println("On for: "       +  offline.runTime + " milliseconds\n" );
+  Serial.println("Message ID: "   +  offline.messageId );
+
+  Serial.println("Name: "         +  offline.fname     );
+  Serial.println("Street: "       +  offline.street    );
+  Serial.println("Phone: "        +  offline.phone     );
+  Serial.println("Occupants: "    +  offline.occupants );
+  Serial.println("Dangers: "      +  offline.danger    );
+  Serial.println("Vacant: "       +  offline.vacant    );
+  Serial.println("First Aid: "    +  offline.firstaid  );
+  Serial.println("Water: "        +  offline.water     );
+  Serial.println("Food: "         +  offline.food      );
+  Serial.println("Mess: "         +  offline.msg       );
+  Serial.println("Time: "         +  waiting + " milliseconds\n");
+
+  Serial.println("Path: "         +  offline.path      );
+
+  Serial.print("FromCiv: ");
+  Serial.println(offline.fromCiv    );
+}
+
 void setupPortal()
 {
   WiFi.mode(WIFI_AP);
@@ -163,7 +210,7 @@ void setupPortal()
   });
 
   webServer.on("/id", []() {
-    webServer.send(200, "text/html", offline.duckID);
+    webServer.send(200, "text/html", offline.duckID + "," + offline.whoAmI);
   });
 
   webServer.on("/mac", []() {
@@ -209,15 +256,7 @@ void test1() {
   webServer.send(200, "text/html", temp);
 }
 
-void test2() {
-  String page = "<body>";
-  page += "<input value=";
-  page += offline.duckID;
-  page += ">";
-  page += "</body>";
 
-  webServer.send(200, "text/plain", page);
-}
 
 void test() {
   String message = "File Not Found\n\n";
@@ -309,6 +348,16 @@ void readData()
   //  return offlineA;
 }
 
+void couple(byte byteCode, String outgoing)
+{
+  LoRa.write(byteCode);               // add byteCode
+  LoRa.write(outgoing.length());      // add payload length
+  LoRa.print(outgoing);               // add payload
+
+  //   Displays Sent Data on OLED and Serial Monitor
+  //   Serial.println("Parameter: " + outgoing);
+}
+
 /**
    sendPayload
    Sends Payload (offline Data Struct as Bytes)
@@ -348,15 +397,7 @@ void sendPayload(Data offline)
   delay(5000);
 }
 
-void couple(byte byteCode, String outgoing)
-{
-  LoRa.write(byteCode);               // add byteCode
-  LoRa.write(outgoing.length());      // add payload length
-  LoRa.print(outgoing);               // add payload
 
-  //   Displays Sent Data on OLED and Serial Monitor
-  //   Serial.println("Parameter: " + outgoing);
-}
 
 //Send duckStat every 30 minutes
 void sendDuckStat(Data offline)
@@ -373,6 +414,23 @@ void sendDuckStat(Data offline)
 
     rolltime += THIRTYMIN;
   }
+}
+
+String duckID()
+{
+  char id1[15];
+  char id2[15];
+
+  uint64_t chipid = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
+  uint16_t chip = (uint16_t)(chipid >> 32);
+
+  snprintf(id1, 15, "%04X", chip);
+  snprintf(id2, 15, "%08X", (uint32_t)chipid);
+
+  String ID1 = id1;
+  String ID2 = id2;
+
+  return ID1 + ID2;
 }
 
 
@@ -394,7 +452,18 @@ void setupDuck()
   Serial.println("On for: "         +  offline.runTime + " milliseconds\n\n" );
 }
 
+String readMessages(byte mLength)
+{
+  String incoming = "";
 
+  for (int i = 0; i < mLength; i++)
+  {
+    incoming += (char)LoRa.read();
+  }
+  //Serial.println(incoming);
+
+  return incoming;
+}
 // Mama and Papa
 
 /**
@@ -492,71 +561,9 @@ void receive(int packetSize)
   }
 }
 
-String readMessages(byte mLength)
-{
-  String incoming = "";
 
-  for (int i = 0; i < mLength; i++)
-  {
-    incoming += (char)LoRa.read();
-  }
-  //Serial.println(incoming);
 
-  return incoming;
-}
 
-/**
-   showReceivedstat
-   Displays Received stat on OLED and Serial Monitor
-*/
-void showReceivedData()
-{
-  /**
-     The total time it took for PAPA to create a packet,
-     send it to MAMA. MAMA parsing victim requests, and
-     send it back to PAPA.
-  */
-  String waiting = String(millis() - lastSendTime);
 
-  Serial.println("Class: "        +  offline.whoAmI     );
-  Serial.println("ID : "          +  offline.duckID    );
-  Serial.println("Location: "     +  offline.whereAmI     );
-  Serial.println("On for: "       +  offline.runTime + " milliseconds\n" );
-  Serial.println("Message ID: "   +  offline.messageId );
-
-  Serial.println("Name: "         +  offline.fname     );
-  Serial.println("Street: "       +  offline.street    );
-  Serial.println("Phone: "        +  offline.phone     );
-  Serial.println("Occupants: "    +  offline.occupants );
-  Serial.println("Dangers: "      +  offline.danger    );
-  Serial.println("Vacant: "       +  offline.vacant    );
-  Serial.println("First Aid: "    +  offline.firstaid  );
-  Serial.println("Water: "        +  offline.water     );
-  Serial.println("Food: "         +  offline.food      );
-  Serial.println("Mess: "         +  offline.msg       );
-  Serial.println("Time: "         +  waiting + " milliseconds\n");
-
-  Serial.println("Path: "         +  offline.path      );
-
-  Serial.print("FromCiv: ");
-  Serial.println(offline.fromCiv    );
-}
-
-String duckID()
-{
-  char id1[15];
-  char id2[15];
-
-  uint64_t chipid = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length: 6 bytes).
-  uint16_t chip = (uint16_t)(chipid >> 32);
-
-  snprintf(id1, 15, "%04X", chip);
-  snprintf(id2, 15, "%08X", (uint32_t)chipid);
-
-  String ID1 = id1;
-  String ID2 = id2;
-
-  return ID1 + ID2;
-}
 
 
