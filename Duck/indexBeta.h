@@ -312,7 +312,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 
    <div id="bodyIntro" class="body on intro">
       <div class="c">
-         <div class="b lang">En Español</div>
+         <div id="enesp" class="b lang">En Español</div>
          <p>You are connected to the OWL emergency network. Sending an SOS message will send your GPS location to First Responders and Emergency Management. You can send a quick SOS or add details about your emergency.</p>
          <p><b>The closest facilties to you are located at:</b><br>Pedro Montañez Municipal Baseball Stadium.</p>
          <br>
@@ -321,10 +321,22 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
          <div id="bisos" class="b sos">SOS</div>
       </div>
    </div>
+   
+   <div id="bodyIntroEs" class="body off intro">
+      <div class="c">
+         <div id="ening" class="b lang">En Ingles</div>
+         <p>Se ha conectao a la Red de Emergencia OWL. Al enviar una solicitud de ayuda, estaremos enviando las coordenadas GPS de su localización a los Primeros Respondedores y Manejo de Emergencias. Puede enviar una solicitud de ayuda rápida o añadir detalles relacionados a su emergencia. Los campos son opcionales.</p>
+         <p><b>El lugar de ayuda más cercana a usted está en:</b><br>Pedro Montañez Municipal Baseball Stadium.</p>
+         <br>
+         <h4>Su localización GPS</h4>
+         <div class="gps"><b>18.50033149N -67.024397W</b><br>Isabela, Puerto Rico</div>
+         <div id="bisosEs" class="b sos">AYUDA</div>
+      </div>
+   </div>
 
    <div id="bodySend" class="body off send">
       <div class="c">
-         <div class="b lang">En Español</div>
+         <div id="enespb" class="b lang">En Español</div>
          <br><br>
          <h4>Your GPS Location</h4>
          <div class="gps"><b>18.50033149N -67.024397W</b><br>Isabela, Puerto Rico</div>
@@ -333,15 +345,39 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
          <div id="dmore" class="b details more">Add Details Before Sending</div>
       </div>
    </div>
+   
+   <div id="bodySendEs" class="body off send">
+      <div class="c">
+         <div id="eningb" class="b lang">En Ingles</div>
+         <br><br>
+         <h4>Su localizacion GPS</h4>
+         <div class="gps"><b>49&deg; 15&#39;42&#34; N 123&deg; 8&#39; 18&#34;W</b><br>Vancouver, BC, Canada</div>
+         <div id="bssosEs" class="b sos">AYUDA</div>
+         <br><br><br>
+         <div id="dmoreEs" class="b details more">Añadir Eetalles Antes de Enviar</div>
+      </div>
+   </div>
 
    <div id="bodySent" class="body off sent">
       <div class="c">
          <div id="bhome" class="b home">Home</div>
-         <div class="gps"><h4>Message Sent</h4><h5 id="dateNow">March 12, 2019 @ 11:02 PM</h5><p>Your message ID#: 9XP002</p></div>
+         <div class="gps"><h4>Message Sent</h4><h5 id="dateNow">March 13, 2019 @ 1:02 PM</h5><p>Your message ID#: 9XP002</p></div>
          <br><br><br><br>
          <p class="disclaimer">If your situation changes, please send another update.
          <div id="bupdate" class="b update">Send Update</div>
          <div class="change" style="width: 90%; display: inline-block;float: left;"><b>Change my status</b><br>I no longer need help</div>
+         <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
+      </div>
+   </div>
+   
+   <div id="bodySentEs" class="body off sent">
+      <div class="c">
+         <div id="bhomeEs" class="b home">Inicio</div>
+         <div class="gps"><h4>Mensaje Enviado</h4><h5 id="dateNowEs">13 de marzo de 2019 @ 1:02 PM</h5><p># de ID de su mensaje: 9XP002</p></div>
+         <br><br><br><br>
+         <p class="disclaimer">Si su situación cambió, por favor envíe una actualización.
+         <div id="bupdateEs" class="b update">ACTUALIZAR</div>
+         <div class="change" style="width: 90%; display: inline-block;float: left;"><b>Actualizar mi condición</b><br>Ya no necesito ayuda</div>
          <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
       </div>
    </div>
@@ -420,6 +456,81 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
          </div>
       </div>
    </div>
+
+    <div id="bodyFormEs" class="body off form">
+      <div class="optional">Todos los campos son opcionales</div>
+      <div class="gps"><b>Su localización GPS</b><br>49&deg; 15&#39;42&#34; N 123&deg; 8&#39; 18&#34;W</div>
+      <div class="c">
+         <div class="s">
+            <h4>Teléfono</h4>
+            <input type="text" placeholder="123-456-7891" class="phone-input" id="phoneInputEs">
+            <h4>Nombre y Apellido</h4>
+            <input type="text" placeholder="Jess Smith" class="name-input" id="nameInputEs">
+            <h4>¿Dónde se encuentra?</h4>
+            <input type="text" placeholder="Closest address, intersection, description" class="address-input" id="locationInputEs">
+         </div>
+         <div class="s">
+            <h4>¿Cuál es su emergencia?</h4>
+            <div class="ch-c"><input type="checkbox"><p>Medica</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Fuego / Explosión</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Inundación</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Violencia</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Derrumbe</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Estructura Colapsada</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Atrapado</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Muerte</p></div>
+            <input type="text" placeholder="Other emergency" class="other-input">
+         </div>
+         <div class="s">
+            <h4>¿Qué necesita en las próximas 24 hrs?</h4>
+            <div class="ch-c"><input type="checkbox"><p>Primeros Aux</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Refugio</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Alimentos</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Ayuda Financiera</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Comida</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Evacuación</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Ropa</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Productos de Higiene</p></div>
+            <input type="text" placeholder="Other" class="other-input">
+         </div>
+         <div class="s">
+            <h4>¿Qué peligros hay a su alrededor?</h4>
+            <div class="ch-c"><input type="checkbox"><p>Eléctricas Arbol</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Carretera Cerrada</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Caido</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Quimicos</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Huma/Fuego</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Animales</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Golpe de Agua</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Explosivos</p></div>
+            <input type="text" placeholder="Other" class="other-input">
+         </div>
+         <div class="s">
+            <h4>¿Cuántas personas?</h4>
+            <input type="text" placeholder="0" class="num-input">
+         </div>
+         <div class="s">
+            <h4>¿Cuántas mascotas?</h4>
+            <input type="text" placeholder="0" class="num-input">
+         </div>
+         <div class="s">
+            <h4 style="width: 90%; float: left; display: inline-block;">¿Usted o a alguien en su grupo se le hace imposible moverse?</h4>
+            <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
+         </div>
+         <div class="s">
+            <h4 style="width: 90%; float: left; display: inline-block;">¿Autoriza a que su información se haga publica para que sus familiares o amigos sepan que se encuentra bien??</h4>
+            <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
+         </div>
+         <div class="s">
+            <h4>Mensaje (300 caracteres)</h4>
+            <textarea type="text" placeholder="More information about your situation" class="message-input" id="messageInputEs"></textarea>
+         </div>
+         <div class="s">
+            <!-- <h4>Change my status:<br>I no longer need help</h4> -->
+            <div id="bfsosEs" class="b sos">PEDIR AYUDA</div>
+         </div>
+      </div>
+   </div>
 </div>
 
 
@@ -427,14 +538,27 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 
    var bodyIntro = document.getElementById("bodyIntro")
    var bodySend = document.getElementById("bodySend")
+   var bodySendEs = document.getElementById("bodySendEs")
    var bodySent = document.getElementById("bodySent")
+   var bodySentEs = document.getElementById("bodySentEs")
    var bodyForm = document.getElementById("bodyForm")
+   var bodyFormEs = document.getElementById("bodyFormEs")
    var bisos = document.getElementById("bisos");
+   var bisosEs = document.getElementById("bisosEs");
    var bssos = document.getElementById("bssos");
+   var bssosEs = document.getElementById("bssosEs");
    var bfsos = document.getElementById("bfsos");
+   var bfsosEs = document.getElementById("bfsosEs");
    var bhome = document.getElementById("bhome");
+   var bhome = document.getElementById("bhomeEs");
+   var besp = document.getElementById("enesp");
+   var bing = document.getElementById("ening");
+   var bespb = document.getElementById("enespb");
+   var bingb = document.getElementById("eningb");
    var bupdate = document.getElementById("bupdate");
+   var bupdateEs = document.getElementById("bupdateEs");
    var dmore = document.getElementById("dmore");
+   var dmoreEs = document.getElementById("dmoreEs");
    var headEl = document.getElementById("headEl");
    
    bisos.addEventListener("click",function(e){
@@ -442,6 +566,57 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySend.classList.remove('off');
       bodyIntro.classList.remove("on")
       bodyIntro.className += " off"
+   },false);
+
+   bisosEs.addEventListener("click",function(e){
+      bodySendEs.className += " on";
+      bodySendEs.classList.remove('off');
+      bodyIntroEs.classList.remove("on")
+      bodyIntroEs.className += " off"
+   },false);
+
+   besp.addEventListener("click",function(e){
+      bodyIntroEs.className += " on";
+      bodyIntroEs.classList.remove('off');
+      bodyIntro.classList.remove("on")
+      bodyIntro.className += " off"
+   },false);
+
+   bing.addEventListener("click",function(e){
+      bodyIntro.className += " on";
+      bodyIntro.classList.remove('off');
+      bodyIntroEs.classList.remove("on")
+      bodyIntroEs.className += " off"
+   },false);
+   
+   bespb.addEventListener("click",function(e){
+      bodyIntroEs.className += " on";
+      bodyIntroEs.classList.remove('off');
+      bodySend.classList.remove("on")
+      bodySend.className += " off"
+   },false);
+
+   bingb.addEventListener("click",function(e){
+      bodyIntro.className += " on";
+      bodyIntro.classList.remove('off');
+      bodySendEs.classList.remove("on")
+      bodySendEs.className += " off"
+   },false);
+   
+   dmore.addEventListener("click",function(e){
+      headEl.className += " form"
+      bodyForm.className += " on";
+      bodyForm.classList.remove('off');
+      bodySend.classList.remove("on")
+      bodySend.className += " off"
+   },false);
+
+   dmoreEs.addEventListener("click",function(e){
+      headEl.className += " form"
+      bodyFormEs.className += " on";
+      bodyFormEs.classList.remove('off');
+      bodySendEs.classList.remove("on")
+      bodySendEs.className += " off"
    },false);
 
    bssos.addEventListener("click",function(e){
@@ -462,6 +637,35 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySent.classList.remove('off');
       bodySend.classList.remove("on")
       bodySend.className += " off"
+      
+      var url = window.location.href;    
+      if (url.indexOf('?') > -1){
+         url = url.split("?")[0]
+         url += submitUrl
+      }else{
+         url += submitUrl
+      }
+      window.location.href = url;
+   },false);
+
+   bssosEs.addEventListener("click",function(e){
+
+      var d = new Date();
+      document.getElementById("dateNowEs").innerHTML = "March " + d.getDate() + ", " + d.getFullYear() + " @ " + d.getHours() + ":" + d.getMinutes();
+
+      var mid = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (var i = 0; i < 12; i++) {
+         mid += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+
+      var submitUrl = "?mid=" + mid + "&name=" + "Jess Smith" + "&location=" + "Isabela" + "&number=" + "1234567890" + "&occupants=" + "2" + "&danger=" + "1" + "&vacant=" + "0" + "&firstaid=" + "1" + "&water=" + "1" + "&food=" + "0" + "&msg=" + "Help me please!"
+      console.log(submitUrl)
+
+      bodySentEs.className += " on";
+      bodySentEs.classList.remove('off');
+      bodySendEs.classList.remove("on")
+      bodySendEs.className += " off"
       
       var url = window.location.href;    
       if (url.indexOf('?') > -1){
@@ -518,11 +722,63 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       window.location.href = url;
    },false);
 
+   bfsosEs.addEventListener("click",function(e){
+
+      var d = new Date();
+      document.getElementById("dateNowEs").innerHTML = "March " + d.getDate() + ", " + d.getFullYear() + " @ " + d.getHours() + ":" + d.getMinutes();
+
+      bodySentEs.className += " on";
+      bodySentEs.classList.remove('off');
+      bodyFormEs.classList.remove("on")
+      bodyFormEs.className += " off"
+
+      var nameInput = document.getElementById('nameInputEs').value
+      var phoneInput = document.getElementById('phoneInputEs').value
+      var locationInput = document.getElementById('locationInputEs').value
+      var messageInput = document.getElementById('messageInputEs').value
+
+      if (nameInput == "") {
+         nameInput = "Jess Smith"
+      }
+      if (phoneInput == "") {
+         phoneInput = "1234567890"
+      }
+      if (locationInput == "") {
+         locationInput = "226 4th Street, Isabela"
+      }
+      if (messageInput == "") {
+         messageInput = "I need help!"
+      }
+
+      var mid = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (var i = 0; i < 12; i++) {
+         mid += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+
+      var submitUrl = "?mid=" + mid + "&name=" + nameInput + "&location=" + locationInput + "&number=" + phoneInput + "&occupants=" + "2" + "&danger=" + "1" + "&vacant=" + "0" + "&firstaid=" + "1" + "&water=" + "1" + "&food=" + "0" + "&msg=" + messageInput
+      var url = window.location.href;    
+      if (url.indexOf('?') > -1){
+         url = url.split("?")[0]
+         url += submitUrl
+      }else{
+         url += submitUrl
+      }
+      window.location.href = url;
+   },false);
+
    bhome.addEventListener("click",function(e){
       bodyIntro.className += " on";
       bodyIntro.classList.remove('off');
       bodySent.classList.remove("on")
       bodySent.className += " off"
+   },false);
+
+   bhomeEs.addEventListener("click",function(e){
+      bodyIntroEs.className += " on";
+      bodyIntroEs.classList.remove('off');
+      bodySentEs.classList.remove("on")
+      bodySentEs.className += " off"
    },false);
 
    bupdate.addEventListener("click",function(e){
@@ -533,27 +789,14 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySent.className += " off"
    },false);
 
-   dmore.addEventListener("click",function(e){
+   bupdateEs.addEventListener("click",function(e){
       headEl.className += " form"
-      bodyForm.className += " on";
-      bodyForm.classList.remove('off');
-      bodySend.classList.remove("on")
-      bodySend.className += " off"
+      bodyFormEs.className += " on";
+      bodyFormEs.classList.remove('off');
+      bodySentEs.classList.remove("on")
+      bodySentEs.className += " off"
    },false);
-   var x = document.getElementById("gps");
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-      } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-    }
-    
-    function showPosition(position) {
-      x.innerHTML = position.coords.latitude + "N " + position.coords.longitude + "W " + "<br>" + "Isabela, Puerto Rico"
-    }
 
-    getLocation()
 
 </script>
 </html>

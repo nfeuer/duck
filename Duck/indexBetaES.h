@@ -295,61 +295,61 @@ const char MAIN_page[] PROGMEM = R"=====(
             <h4>¿Cuál es su emergencia?</h4>
             <div class="ch-c"><input type="checkbox"><p>√</p></div>
             <div class="ch-c"><input type="checkbox"><p>Fuego / Explosión</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Flood</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Violence</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Landslide</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Building Collapse</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Trapped</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Death</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Inundación</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Violencia</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Derrumbe</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Estructura Colapsada</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Atrapado</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Muerte</p></div>
             <input type="text" placeholder="Other emergency" class="other-input">
          </div>
          <div class="s">
-            <h4>What do you need in the next 24 hours?</h4>
-            <div class="ch-c"><input type="checkbox"><p>First Aid</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Shelter</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Food</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Financial Aid</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Water</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Evacuation</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Clothing</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Hygiene</p></div>
+            <h4>¿Qué necesita en las próximas 24 hrs?</h4>
+            <div class="ch-c"><input type="checkbox"><p>Primeros Aux</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Refugio</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Alimentos</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Ayuda Financiera</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Comida</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Evacuación</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Ropa</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Productos de Higiene</p></div>
             <input type="text" placeholder="Other" class="other-input">
          </div>
          <div class="s">
-            <h4>What hazards are directly around you?</h4>
-            <div class="ch-c"><input type="checkbox"><p>Electrical</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Road Blocked</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Fallen Trees</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Chemical</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Smoke/Fire</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Animals</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Fast Current</p></div>
-            <div class="ch-c"><input type="checkbox"><p>Explosives</p></div>
+            <h4>¿Qué peligros hay a su alrededor?</h4>
+            <div class="ch-c"><input type="checkbox"><p>Eléctricas Arbol</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Carretera Cerrada</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Caido</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Quimicos</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Huma/Fuego</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Animales</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Golpe de Agua</p></div>
+            <div class="ch-c"><input type="checkbox"><p>Explosivos</p></div>
             <input type="text" placeholder="Other" class="other-input">
          </div>
          <div class="s">
-            <h4>How many people?</h4>
+            <h4>¿Cuántas personas?</h4>
             <input type="text" placeholder="0" class="num-input">
          </div>
          <div class="s">
-            <h4>How many pets?</h4>
+            <h4>¿Cuántas mascotas?</h4>
             <input type="text" placeholder="0" class="num-input">
          </div>
          <div class="s">
-            <h4 style="width: 90%; float: left; display: inline-block;">Are you or anyone in your group immobile?</h4>
+            <h4 style="width: 90%; float: left; display: inline-block;">¿Usted o a alguien en su grupo se le hace imposible moverse?</h4>
             <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
          </div>
          <div class="s">
-            <h4 style="width: 90%; float: left; display: inline-block;">Make your name public so friends/family know you are ok?</h4>
+            <h4 style="width: 90%; float: left; display: inline-block;">¿Autoriza a que su información se haga publica para que sus familiares o amigos sepan que se encuentra bien??</h4>
             <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
          </div>
          <div class="s">
-            <h4>Message (300 characters)</h4>
+            <h4>Mensaje (300 caracteres)</h4>
             <textarea type="text" placeholder="More information about your situation" class="message-input"></textarea>
          </div>
          <div class="s">
             <!-- <h4>Change my status:<br>I no longer need help</h4> -->
-            <div class="b sos">SEND SOS</div>
+            <div class="b sos">PEDIR AYUDA</div>
          </div>
       </div>
    </div>
