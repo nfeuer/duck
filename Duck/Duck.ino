@@ -8,7 +8,7 @@
 #include <DNSServer.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-#include "index.h"
+#include "indexBeta.h"
 #include "credentials.h"
 
 /***************************************************
