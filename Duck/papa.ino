@@ -183,11 +183,12 @@ void duckData(Data offline)
 
 String makeId() {
   char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-  char uuid[8];
+  char uuid[9];
 
   for(int i = 0; i <= 7; i++) {
-    uuid[i] = items[random(1,35)];
+    uuid[i] = items[random(36)];
   }
+  uuid[8] = '\0';
 
   String str = String(uuid);
   

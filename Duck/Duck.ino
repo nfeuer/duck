@@ -16,11 +16,11 @@
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define DL
-const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+//#define DL
+//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
 //const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
@@ -129,6 +129,8 @@ void setupLoRa()
 {
   SPI.begin(5, 19, 27, 18);
   LoRa.setPins(SS, RST, DI0);
+  LoRa.setTxPower(20);
+  //LoRa.setSignalBandwidth(62.5E3);
 
   //Initialize LoRa
   if (!LoRa.begin(BAND))
@@ -560,10 +562,5 @@ void receive(int packetSize)
     return;
   }
 }
-
-
-
-
-
 
 
