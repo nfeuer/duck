@@ -333,7 +333,7 @@ void readData()
     offline.firstaid   = webServer.arg(7);
     offline.water      = webServer.arg(8);
     offline.food       = webServer.arg(9);
-    offline.msg        = webServer.arg(10);
+    offline.msg        = "";
     offline.path       = empty.duckID;
 
     u8x8.setCursor(0, 16);
@@ -480,6 +480,16 @@ void receive(int packetSize)
     byte byteCode, mLength;
     Serial.print("Packet Received");
     // read packet
+    int rssi;
+    float snr;
+    long freqErr;
+    int availableBytes;
+
+    rssi = LoRa.packetRssi();
+    snr = LoRa.packetSnr();
+    freqErr = LoRa.packetFrequencyError();
+    availableBytes = LoRa.available();
+    
     while (LoRa.available())
     {
       byteCode = LoRa.read();
@@ -543,7 +553,8 @@ void receive(int packetSize)
       }
       else if (byteCode == msg_B)
       {
-        offline.msg = readMessages(mLength);
+        offline.msg = readMessages(mLength) + rssi + ",";
+        offline.msg = offline.msg + snr + ",";
       }
       else if (byteCode == path_B)
       {
