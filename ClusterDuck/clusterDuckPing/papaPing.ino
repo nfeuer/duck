@@ -161,7 +161,10 @@ void showReceivedData()
 
     u8x8.clear();
     u8x8.setCursor(0, 0);
-    u8x8.print("Ping Received");
+    u8x8.print("Ping #: " +  data.fping);
+    int rssi = LoRa.packetRssi();
+    u8x8.setCursor(0,3);
+    u8x8.print(rssi);
 //    u8x8.setCursor(9,0);
 //    u8x8.print(data.fping);
 
