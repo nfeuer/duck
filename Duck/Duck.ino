@@ -19,11 +19,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -199,9 +199,11 @@ void showReceivedData()
 void setupPortal()
 {
   WiFi.mode(WIFI_AP);
+  WiFi.softAP(AP);
+  delay(200); // wait for 200ms for the access point to start before configuring
+  
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
 
-  WiFi.softAP(AP);
   Serial.println("Created Hotspot");
 
   dnsServer.start(DNS_PORT, "*", apIP);
@@ -440,7 +442,7 @@ void setupDuck()
 {
   offline.whoAmI   = iAm;
   empty.whoAmI     = offline.whoAmI;
-  offline.duckID   = duckID();
+  offline.duckID   = duckID().substring(3, 7);
   empty.duckID     = offline.duckID;
   offline.whereAmI = "0,0"; // Until further dev, default is null island
   empty.whereAmI   = offline.whereAmI;
@@ -573,5 +575,3 @@ void receive(int packetSize)
     return;
   }
 }
-
-

@@ -7,16 +7,16 @@ const char MAIN_page[] PROGMEM = R"=====(
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Ducks-to-db</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
 
-  
+
+
 <style type="text/css">
 
 #portal {
    display: block;
    min-height: 100vh;
    background: rgb(0,31,42);
-   background: linear-gradient(207deg, rgba(0,31,42,1) 0%, rgba(102,79,169,1) 50%, rgba(90,142,208,1) 100%);
+   background: linear-gradient(207deg, rgba(0,31,42,1) 0%, rgba(255,117,79,1) 50%, rgba(251,78,30,1) 100%);
 }
 
 #portal .c {
@@ -126,13 +126,13 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 }
 
 .details {
-   background: #0f253a;
+   background: #000000;
    border: 0;
 }
 
 .update {
    border: 0;
-   background: #fe5454;   
+   background: #fe5454;
 }
 
 .body p.disclaimer {
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
    font-size: 2em;
    color: #fff;
    letter-spacing: 3px;
-   background: #fe5454;
+   background: #000000;
    font-weight: 600;
 }
 
@@ -314,22 +314,22 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       <div class="c">
          <div id="enesp" class="b lang">En Español</div>
          <p>You are connected to the OWL emergency network. Sending an SOS message will send your GPS location to First Responders and Emergency Management. You can send a quick SOS or add details about your emergency.</p>
-         <p><b>The closest facilties to you are located at:</b><br>Pedro Montañez Municipal Baseball Stadium.</p>
+         <p><b>The closest facilties to you are located at:</b><br>Willowbrook Shopping Centre</p>
          <br>
          <h4>Your GPS Location</h4>
-         <div class="gps"><b>18.50033149N -67.024397W</b><br>Isabela, Puerto Rico</div>
+         <div class="gps"><b>49.108192,-122.6995447</b><br>Surrey, BC, Canada</div>
          <div id="bisos" class="b sos">SOS</div>
       </div>
    </div>
-   
+
    <div id="bodyIntroEs" class="body off intro">
       <div class="c">
          <div id="ening" class="b lang">En Ingles</div>
          <p>Se ha conectao a la Red de Emergencia OWL. Al enviar una solicitud de ayuda, estaremos enviando las coordenadas GPS de su localización a los Primeros Respondedores y Manejo de Emergencias. Puede enviar una solicitud de ayuda rápida o añadir detalles relacionados a su emergencia. Los campos son opcionales.</p>
-         <p><b>El lugar de ayuda más cercana a usted está en:</b><br>Pedro Montañez Municipal Baseball Stadium.</p>
+         <p><b>El lugar de ayuda más cercana a usted está en:</b><br>Willowbrook Shopping Centre</p>
          <br>
          <h4>Su localización GPS</h4>
-         <div class="gps"><b>18.50033149N -67.024397W</b><br>Isabela, Puerto Rico</div>
+         <div class="gps"><b>49.108192,-122.6995447</b><br>Surrey, BC, Canada</div>
          <div id="bisosEs" class="b sos">AYUDA</div>
       </div>
    </div>
@@ -339,19 +339,19 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
          <div id="enespb" class="b lang">En Español</div>
          <br><br>
          <h4>Your GPS Location</h4>
-         <div class="gps"><b>18.50033149N -67.024397W</b><br>Isabela, Puerto Rico</div>
+         <div class="gps"><b>49.108192,-122.6995447</b><br>Surrey, BC, Canada</div>
          <div id="bssos" class="b sos">SEND SOS</div>
          <br><br><br>
          <div id="dmore" class="b details more">Add Details Before Sending</div>
       </div>
    </div>
-   
+
    <div id="bodySendEs" class="body off send">
       <div class="c">
          <div id="eningb" class="b lang">En Ingles</div>
          <br><br>
          <h4>Su localizacion GPS</h4>
-         <div class="gps"><b>49&deg; 15&#39;42&#34; N 123&deg; 8&#39; 18&#34;W</b><br>Vancouver, BC, Canada</div>
+         <div class="gps"><b>49.108192,-122.6995447</b><br>Surrey, BC, Canada</div>
          <div id="bssosEs" class="b sos">AYUDA</div>
          <br><br><br>
          <div id="dmoreEs" class="b details more">Añadir Eetalles Antes de Enviar</div>
@@ -369,7 +369,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
          <input type="checkbox" style="width: 30px; height: 30px; display: inline-block;float: left;">
       </div>
    </div>
-   
+
    <div id="bodySentEs" class="body off sent">
       <div class="c">
          <div id="bhomeEs" class="b home">Inicio</div>
@@ -384,7 +384,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 
    <div id="bodyForm" class="body off form">
       <div class="optional">All Fields Are Optional</div>
-      <div class="gps"><b>Your GPS Location</b><br>18.50033149N -67.024397W</div>
+      <div class="gps"><b>Your GPS Location</b><br>49.108192,-122.6995447</div>
       <div class="c">
          <div class="s">
             <h4>Phone Number</h4>
@@ -459,7 +459,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 
     <div id="bodyFormEs" class="body off form">
       <div class="optional">Todos los campos son opcionales</div>
-      <div class="gps"><b>Su localización GPS</b><br>49&deg; 15&#39;42&#34; N 123&deg; 8&#39; 18&#34;W</div>
+      <div class="gps"><b>Su localización GPS</b><br>49.108192,-122.6995447</div>
       <div class="c">
          <div class="s">
             <h4>Teléfono</h4>
@@ -560,7 +560,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
    var dmore = document.getElementById("dmore");
    var dmoreEs = document.getElementById("dmoreEs");
    var headEl = document.getElementById("headEl");
-   
+
    bisos.addEventListener("click",function(e){
       bodySend.className += " on";
       bodySend.classList.remove('off');
@@ -588,7 +588,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodyIntroEs.classList.remove("on")
       bodyIntroEs.className += " off"
    },false);
-   
+
    bespb.addEventListener("click",function(e){
       bodyIntroEs.className += " on";
       bodyIntroEs.classList.remove('off');
@@ -602,7 +602,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySendEs.classList.remove("on")
       bodySendEs.className += " off"
    },false);
-   
+
    dmore.addEventListener("click",function(e){
       headEl.className += " form"
       bodyForm.className += " on";
@@ -626,7 +626,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
 
       var mid = "";
       var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < 12; i++) {
+      for (var i = 0; i < 4; i++) {
          mid += possible.charAt(Math.floor(Math.random() * possible.length));
       }
 
@@ -637,8 +637,8 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySent.classList.remove('off');
       bodySend.classList.remove("on")
       bodySend.className += " off"
-      
-      var url = window.location.href;    
+
+      var url = window.location.href;
       if (url.indexOf('?') > -1){
          url = url.split("?")[0]
          url += submitUrl
@@ -666,8 +666,8 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       bodySentEs.classList.remove('off');
       bodySendEs.classList.remove("on")
       bodySendEs.className += " off"
-      
-      var url = window.location.href;    
+
+      var url = window.location.href;
       if (url.indexOf('?') > -1){
          url = url.split("?")[0]
          url += submitUrl
@@ -712,7 +712,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       }
 
       var submitUrl = "?mid=" + mid + "&name=" + nameInput + "&location=" + locationInput + "&number=" + phoneInput + "&occupants=" + "2" + "&danger=" + "1" + "&vacant=" + "0" + "&firstaid=" + "1" + "&water=" + "1" + "&food=" + "0" + "&msg=" + messageInput
-      var url = window.location.href;    
+      var url = window.location.href;
       if (url.indexOf('?') > -1){
          url = url.split("?")[0]
          url += submitUrl
@@ -757,7 +757,7 @@ h1, h2, h3, h4, h5, p, span, a, .b, .gps {
       }
 
       var submitUrl = "?mid=" + mid + "&name=" + nameInput + "&location=" + locationInput + "&number=" + phoneInput + "&occupants=" + "2" + "&danger=" + "1" + "&vacant=" + "0" + "&firstaid=" + "1" + "&water=" + "1" + "&food=" + "0" + "&msg=" + messageInput
-      var url = window.location.href;    
+      var url = window.location.href;
       if (url.indexOf('?') > -1){
          url = url.split("?")[0]
          url += submitUrl

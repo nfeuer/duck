@@ -18,7 +18,7 @@ void setup()
 
   setupDisplay();
   setupLoRa();
-  setupPortal(); // Test
+  //setupPortal(); // Test
 
   setupWiFi();
 
@@ -169,23 +169,23 @@ void duckData(Data offline)
   String jsonstat;
   root.printTo(jsonstat);
   
-  if (client.publish(topic2, jsonstat.c_str()))
-  {
-    Serial.println("Publish ok");
-    root.prettyPrintTo(Serial);
-    Serial.println("");
-  }
-  else
-  {
-    Serial.println("Publish failed");
-  }
+//  if (client.publish(topic2, jsonstat.c_str()))
+//  {
+//    Serial.println("Publish ok");
+//    root.prettyPrintTo(Serial);
+//    Serial.println("");
+//  }
+//  else
+//  {
+//    Serial.println("Publish failed");
+//  }
 }
 
 String makeId() {
   char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
   char uuid[9];
 
-  for(int i = 0; i <= 7; i++) {
+  for(int i = 0; i <= 3; i++) {
     uuid[i] = items[random(0,35)];
   }
   uuid[9] = '\0';
