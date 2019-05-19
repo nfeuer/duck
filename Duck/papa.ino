@@ -18,7 +18,8 @@ void setup()
 
   setupDisplay();
   setupLoRa();
-  //setupPortal(); // Test
+
+  // setupPortal(); // Toggled Captive Portal from PapaDuck
 
   setupWiFi();
 
