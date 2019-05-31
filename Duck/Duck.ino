@@ -19,11 +19,11 @@
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -149,16 +149,6 @@ void setupLoRa()
   LoRa.enableCrc();             // Activate crc
 }
 
-void test2() {
-  String page = "<body>";
-  page += "<input value=";
-  page += offline.duckID;
-  page += ">";
-  page += "</body>";
-
-  webServer.send(200, "text/plain", page);
-}
-
 /**
    showReceivedstat
    Displays Received stat on OLED and Serial Monitor
@@ -199,9 +189,11 @@ void showReceivedData()
 void setupPortal()
 {
   WiFi.mode(WIFI_AP);
+  WiFi.softAP(AP);
+  delay(200); // wait for 200ms for the access point to start before configuring
+
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
 
-  WiFi.softAP(AP);
   Serial.println("Created Hotspot");
 
   dnsServer.start(DNS_PORT, "*", apIP);
@@ -215,12 +207,27 @@ void setupPortal()
     webServer.send(200, "text/html", offline.duckID + "," + offline.whoAmI);
   });
 
+  webServer.on("/restart",[]()
+  {
+    webServer.send(200,"text/plain", "Restarting...");
+    delay(1000);
+    ESP.restart();
+  });
+
+  // webServer.on("/stat",[]()
+  // {
+  //   server.send(200,"text/plain", "Sending Status...");
+  //   dStat = true;
+  //   delay(1000);
+  //   ESP.restart();
+  // });
+
   webServer.on("/mac", []() {
     String    page = "<h1>Duck Mac Address</h1><h3>Data:</h3> <h4>" + offline.duckID + "</h4>";
     webServer.send(200, "text/html", page);
   });
 
-  webServer.on("/test", test2);
+  // Test 👍👌😅
 
   webServer.begin();
 
@@ -233,66 +240,6 @@ void setupPortal()
     Serial.println("Created local DNS");
     MDNS.addService("http", "tcp", 80);
   }
-}
-
-void test1() {
-  char temp[400];
-  snprintf(temp, 400,
-
-           "<html>\
-  <head>\
-    <meta http-equiv='refresh' content='5'/>\
-    <title>ESP32 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-    </style>\
-  </head>\
-  <body>\
-    <h1>Hello from ESP32!</h1>\
-    <input value=%d>\
-  </body>\
-</html>",
-
-           offline.duckID
-          );
-  webServer.send(200, "text/html", temp);
-}
-
-
-
-void test() {
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += webServer.uri();
-  message += "\nMethod: ";
-  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += webServer.args();
-  message += "\n";
-
-  for (uint8_t i = 0; i < webServer.args(); i++) {
-    message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
-  }
-
-  webServer.send(200, "text/plain", message);
-}
-
-void handleNotFound()
-{
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += webServer.uri();
-  message += "\nMethod: ";
-  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += webServer.args();
-  message += "\n";
-
-  for (uint8_t i = 0; i < webServer.args(); i++) {
-    message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
-  }
-
-  webServer.send(404, "text/plain", message);
 }
 
 /**
@@ -399,14 +346,11 @@ void sendPayload(Data offline)
   delay(5000);
 }
 
-
-
 //Send duckStat every 30 minutes
 void sendDuckStat(Data offline)
 {
   if ((long)(millis() - rolltime) >= 0)
   {
-
     LoRa.beginPacket();
     couple(whoAmI_B, offline.whoAmI);
     couple(duckID_B, offline.duckID);
@@ -435,12 +379,11 @@ String duckID()
   return ID1 + ID2;
 }
 
-
 void setupDuck()
 {
   offline.whoAmI   = iAm;
   empty.whoAmI     = offline.whoAmI;
-  offline.duckID   = duckID();
+  offline.duckID   = duckID().substring(3, 7);
   empty.duckID     = offline.duckID;
   offline.whereAmI = "0,0"; // Until further dev, default is null island
   empty.whereAmI   = offline.whereAmI;
@@ -489,7 +432,7 @@ void receive(int packetSize)
     snr = LoRa.packetSnr();
     freqErr = LoRa.packetFrequencyError();
     availableBytes = LoRa.available();
-    
+
     while (LoRa.available())
     {
       byteCode = LoRa.read();
@@ -573,5 +516,3 @@ void receive(int packetSize)
     return;
   }
 }
-
-
