@@ -209,7 +209,7 @@ void setupPortal()
 
   webServer.on("/restart",[]()
   {
-    server.send(200,"text/plain", "Restarting...");
+    webServer.send(200,"text/plain", "Restarting...");
     delay(1000);
     ESP.restart();
   });
