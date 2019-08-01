@@ -1,3 +1,5 @@
+[Join the Project Owl and ClusterDuck and #Help Channel on Slack and ask questions here!](http://project-owl.com/slack)
+
 # Setup Guide
 ### Environment
 * Download and Install the [Arduino IDE](https://www.arduino.cc/en/main/software)
@@ -19,4 +21,4 @@ The development board that we recommend, is the [Heltec Esp32 + LoRa](https://ww
 * In Arduino, go to Tools → Port → (Select from Dropdown Menu) USB UART Port
 * The DuckLink, Mama, and Papa, can be individually flashed by toggling just few lines of code in the main Duck.ino file
 * Go to the Duck.ino file in Arduino IDE and click on Verify
-* If no errors, then click on Upload, to download the firmware to the board.
+* If no errors, then click on Upload, to flash the firmware to the board
