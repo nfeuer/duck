@@ -12,7 +12,7 @@
 
 ### Hardware
 The development board that we recommend, is the [Heltec Esp32 + LoRa](https://www.amazon.com/MakerFocus-Development-Bluetooth-0-96inch-Display/dp/B076MSLFC9/ref=sr_1_1?keywords=heltec+32+lora&qid=1564689711&s=gateway&sr=8-1). But with minor changes, it is possible to setup with other hardware with a similar configuration (ESP32 + LoRa Chip).
-* Make sure you are getting the correct frequency for your respective country. 
+* Make sure you are getting the appropriate frequency for your respective country. 
 * Use this [link](https://www.thethingsnetwork.org/docs/lorawan/frequencies-by-country.html) as a guide
 
 ### Firmware
