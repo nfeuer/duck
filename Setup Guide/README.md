@@ -3,8 +3,9 @@
 # Setup Guide
 ### Environment
 * Download and Install the [Arduino IDE](https://www.arduino.cc/en/main/software)
-* Download [USB to UART Bridge VCP Driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
-  * Once it is finished installing, go to Mac System Preferences -> Security and Privacy -> General. Make sure Silicon Labs is allowed.
+* If installing this on Mac
+  * Download [USB to UART Bridge VCP Driver](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
+  * Once it is finished installing, go to Mac System Preferences → Security and Privacy → General and ensure Silicon Labs is allowed
 * Open Arduino
 * Follow these [instructions](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/boards_manager.md) to install the specific board that is being used
 * In Arduino, go to Tools → Board → (Select from Dropdown Menu) “Heltic_WIFI_LoRa_32“
