@@ -80,11 +80,6 @@ void loop()
     setupWiFi();
   }
   setupMQTT();
-  
-  if(QuackPack == 1)
-  {
-    
-  }
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
