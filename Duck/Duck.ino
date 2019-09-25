@@ -211,7 +211,8 @@ void setupPortal()
   {
     webServer.send(200,"text/plain", "Restarting...");
     delay(1000);
-    ESP.restart();
+    restartDuck();
+    // ESP.restart();
   });
 
   // webServer.on("/stat",[]()
@@ -240,6 +241,16 @@ void setupPortal()
     Serial.println("Created local DNS");
     MDNS.addService("http", "tcp", 80);
   }
+}
+
+/**
+  restart
+  Only restarts ESP
+*/
+void restartDuck()
+{
+  Serial.println("Restarting Duck...");
+  ESP.restart();
 }
 
 /**

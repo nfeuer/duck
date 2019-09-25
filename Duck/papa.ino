@@ -73,6 +73,11 @@ void setupMQTT()
 
 void loop()
 {
+  if(WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("WiFi disconnected, reconnecting to local network");
+    setupWiFi();
+  }
   setupMQTT();
   
   // ⚠️ Parses Civilian Requests into Data Structure
