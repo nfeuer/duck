@@ -27,7 +27,7 @@ void loop()
   if(QuackPack == 1)
   {
     loopQuack();
-    sendPayload();
+    sendPayload(empty);
   }
 
   // ⚠️ Parses Civilian Requests into Data Structure

@@ -104,6 +104,11 @@ void loop()
     offline = empty;
   }
 
+  if(QuackPack == 1)
+  {
+    quackJson();
+  }
+
 }
 
 /**
@@ -143,7 +148,7 @@ void jsonify(Data offline)
   String jsonstat;
   root.printTo(jsonstat);
   root.prettyPrintTo(Serial);
-  
+
   if (client.publish(topic, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
@@ -175,7 +180,7 @@ void duckData(Data offline)
 
   String jsonstat;
   root.printTo(jsonstat);
-  
+
 //  if (client.publish(topic2, jsonstat.c_str()))
 //  {
 //    Serial.println("Publish ok");
@@ -198,12 +203,12 @@ String makeId() {
   uuid[9] = '\0';
 
   String str = String(uuid);
-  
+
   return  str;
-  
+
 }
 
-void quackJson(Data offline)
+void quackJson()
 {
   const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
   DynamicJsonBuffer jsonBuffer(bufferSize);
@@ -216,7 +221,7 @@ void quackJson(Data offline)
 
   JsonObject& quack_data   = civilian.createNestedObject("Data");
 
-  for(int i = 0; i < numPayloads; i++)
+  for(int i = 0; i < PAYLOADSIZE; i++)
   {
       civilian_info[i]        = quackArray[i];
   }
@@ -226,7 +231,7 @@ void quackJson(Data offline)
   String jsonstat;
   root.printTo(jsonstat);
   root.prettyPrintTo(Serial);
-  
+
   if (client.publish(topic, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
