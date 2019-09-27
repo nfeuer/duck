@@ -223,7 +223,7 @@ void quackJson()
 
   for(int i = 0; i < PAYLOADSIZE; i++)
   {
-      civilian_info[i]        = quackArray[i];
+      quack_data[i]        = quackArray[i];
   }
 
   root["path"]                = offline.path;
