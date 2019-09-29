@@ -92,7 +92,11 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
+  if(offline.whoAmI == "quackpack")
+  {
+    quackJson();
+  }
+  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     offline.path = offline.path + "," + empty.duckID;
     Serial.println(offline.path);
@@ -103,12 +107,6 @@ void loop()
     Serial.print("Parsing LoRa Data");
     offline = empty;
   }
-
-  if(QuackPack == 1)
-  {
-    quackJson();
-  }
-
 }
 
 /**
@@ -180,24 +178,14 @@ void duckData(Data offline)
 
   String jsonstat;
   root.printTo(jsonstat);
-
-//  if (client.publish(topic2, jsonstat.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
 }
 
 String makeId() {
   char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
   char uuid[9];
 
-  for(int i = 0; i <= 3; i++) {
+  for(int i = 0; i <= 3; i++)
+  {
     uuid[i] = items[random(0,35)];
   }
   uuid[9] = '\0';
@@ -219,7 +207,7 @@ void quackJson()
 
   JsonObject& quack = root.createNestedObject("Quacks");
 
-  JsonObject& quack_data   = civilian.createNestedObject("Data");
+  JsonObject& quack_data   = quack.createNestedObject("Data");
 
   for(int i = 0; i < PAYLOADSIZE; i++)
   {

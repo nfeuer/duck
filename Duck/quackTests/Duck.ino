@@ -22,8 +22,8 @@ un/comment lines to compile Ducklink/Mama/Papa
 #define MD
 const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-//#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+// #define PD
+// const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 bool QuackPack = false;
 // int numPayloads = 0;
@@ -122,6 +122,7 @@ byte msgId_B      = 0xF4;
 byte path_B       = 0xF3;
 
 byte quack_B       = 0xF5;
+byte iamhere       = 0xF6;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -336,7 +337,7 @@ void sendPayload(Data offline)
 {
   LoRa.beginPacket();
 
-  if(QuackPack  == 1)
+  if(QuackPack  == true)
   {
     QuackPayload();
   }
@@ -366,6 +367,7 @@ void sendPayload(Data offline)
 
     couple(path_B, offline.path);
   }
+  LoRa.endPacket();
 }
 
 //Send duckStat every 30 minutes
@@ -427,7 +429,6 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-
   return incoming;
 }
 // Mama and Papa
@@ -461,95 +462,86 @@ void receive(int packetSize)
       byteCode = LoRa.read();
       mLength  = LoRa.read();
 
-      if (QuackPack == 1)
+      if (byteCode == quack_B)
       {
-        if (byteCode == quack_B)
+        offline.whoAmI = "quackpack";
+        for (int i = 0; i < PAYLOADSIZE; i++)
         {
-          for (int i = 0; i < PAYLOADSIZE; i++)
-          {
-            quackArray[i] = readMessages(mLength);
-          }
+          quackArray[i] = readMessages(mLength);
         }
       }
-      else
+      else if (byteCode == whoAmI_B)
       {
-        if (byteCode == whoAmI_B)
-        {
-          offline.whoAmI = readMessages(mLength);
-        }
-        else if (byteCode == duckID_B)
-        {
-          offline.duckID = readMessages(mLength);
-        }
-        else if (byteCode == whereAmI_B)
-        {
-          offline.whereAmI = readMessages(mLength);
-        }
-        else if (byteCode == runTime_B)
-        {
-          offline.runTime = readMessages(mLength);
-        }
-        else if (byteCode == fromCiv_B)
-        {
-          offline.fromCiv = 0;
-        }
-        else if (byteCode == fname_B)
-        {
-          offline.fname = readMessages(mLength);
-        }
-        else if (byteCode == street_B)
-        {
-          offline.street = readMessages(mLength);
-        }
-        else if (byteCode == phone_B)
-        {
-          offline.phone = readMessages(mLength);
-        }
-        else if (byteCode == occupants_B)
-        {
-          offline.occupants = readMessages(mLength);
-        }
-        else if (byteCode == danger_B)
-        {
-          offline.danger = readMessages(mLength);
-        }
-        else if (byteCode == vacant_B)
-        {
-          offline.vacant = readMessages(mLength);
-        }
-        else if (byteCode == firstaid_B)
-        {
-          offline.firstaid = readMessages(mLength);
-        }
-        else if (byteCode == water_B)
-        {
-          offline.water = readMessages(mLength);
-        }
-        else if (byteCode == food_B)
-        {
-          offline.food = readMessages(mLength);
-        }
-        else if (byteCode == msg_B)
-        {
-          offline.msg = readMessages(mLength) + rssi + ",";
-          offline.msg = offline.msg + snr + ",";
-        }
-        else if (byteCode == path_B)
-        {
-          offline.path = readMessages(mLength);
-        }
-        else if (byteCode == msgId_B)
-        {
-          offline.messageId = readMessages(mLength);
-        }
+        offline.whoAmI = readMessages(mLength);
+      }
+      else if (byteCode == duckID_B)
+      {
+        offline.duckID = readMessages(mLength);
+      }
+      else if (byteCode == whereAmI_B)
+      {
+        offline.whereAmI = readMessages(mLength);
+      }
+      else if (byteCode == runTime_B)
+      {
+        offline.runTime = readMessages(mLength);
+      }
+      else if (byteCode == fromCiv_B)
+      {
+        offline.fromCiv = 0;
+      }
+      else if (byteCode == fname_B)
+      {
+        offline.fname = readMessages(mLength);
+      }
+      else if (byteCode == street_B)
+      {
+        offline.street = readMessages(mLength);
+      }
+      else if (byteCode == phone_B)
+      {
+        offline.phone = readMessages(mLength);
+      }
+      else if (byteCode == occupants_B)
+      {
+        offline.occupants = readMessages(mLength);
+      }
+      else if (byteCode == danger_B)
+      {
+        offline.danger = readMessages(mLength);
+      }
+      else if (byteCode == vacant_B)
+      {
+        offline.vacant = readMessages(mLength);
+      }
+      else if (byteCode == firstaid_B)
+      {
+        offline.firstaid = readMessages(mLength);
+      }
+      else if (byteCode == water_B)
+      {
+        offline.water = readMessages(mLength);
+      }
+      else if (byteCode == food_B)
+      {
+        offline.food = readMessages(mLength);
+      }
+      else if (byteCode == msg_B)
+      {
+        offline.msg = readMessages(mLength) + rssi + ",";
+        offline.msg = offline.msg + snr + ",";
+      }
+      else if (byteCode == path_B)
+      {
+        offline.path = readMessages(mLength);
+      }
+      else if (byteCode == msgId_B)
+      {
+        offline.messageId = readMessages(mLength);
       }
     }
+  }
 
-    showReceivedData();
-    //jsonify(offline);
-  }
-  else
-  {
-    return;
-  }
+  showReceivedData();
+  //jsonify(offline);
 }

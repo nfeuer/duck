@@ -1,5 +1,5 @@
 // If Quack is Defined in SetUp QuackPack will be Compiled with rest of MamaQuack
-#ifdef QUACKPACK
+#ifdef QUACKPACK2
 
 // // Simple Boilerplate for 3rd Party Devs (QuackHackers)
 // #define QUACKPACK
@@ -20,6 +20,16 @@ float   offTime     = 9680;
 void setupQuack()
 {
   QuackPack = true;
+
+  // studentID = nickFeuer;
+  // token: 1234;
+  //
+  // project-owl.com/universityname
+  //
+  // login: nickFeuertest
+  // pw: 1234
+  //
+  // duckID
 
   Serial.begin(9600);
   pinMode(ledPower,OUTPUT);
@@ -44,7 +54,6 @@ void loopQuack()
     Serial.println((float(dustVal/1024)-0.0356)*120000*0.035);
   }
 }
-
 
 void QuackPayload()
 {
