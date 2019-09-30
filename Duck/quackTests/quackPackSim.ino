@@ -3,11 +3,6 @@
 
 // // Simple Boilerplate for 3rd Party Devs (QuackHackers)
 
-#ifdef PAYLOADSIZE
-#undef PAYLOADSIZE
-#define PAYLOADSIZE 2//redefine it with the new value
-#endif
-
 typedef struct
 {
   String deviceID;
@@ -46,15 +41,17 @@ void QuackPayload()
   Serial.println("QuackPayload()");
 
   Serial.print(" - Payload ID: ");
-  // Serial.println(payload.deviceID);
-  couple(quack_B, payload.deviceID);
+  Serial.println(payload.deviceID);
 
   // Serial.print(" - Sensor Val: ");
   // Serial.println(payload.sensorVal);
   // couple(quack_B, String(payload.sensorVal));
-  long randNumber = random(300);
 
-  couple(quack_B, String(payload.sensorVal));
+  String quacket = payload.sensorVal + ",";
+
+  couple(quacket_B, payload.deviceID);
+  couple(quacket_B, String(random(999)));
+  couple(quacket_B, quacket);
 
   Serial.println("\n==============\n");
 

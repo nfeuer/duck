@@ -16,11 +16,11 @@ un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-//#define DL
-//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+#define DL
+const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+// #define MD
+// const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 // #define PD
 // const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
@@ -29,7 +29,6 @@ bool QuackPack = false;
 // int numPayloads = 0;
 
 #define QUACKPACK
-#define PAYLOADSIZE 1
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -97,6 +96,15 @@ typedef struct
   String path;
 } Data;
 
+typedef struct
+{
+  String deviceID;
+  String messageID;
+  String payload;
+} QuackTest;
+
+QuackTest qtest;
+
 Data offline;
 Data empty;
 
@@ -121,8 +129,12 @@ byte msg_B        = 0xE4;
 byte msgId_B      = 0xF4;
 byte path_B       = 0xF3;
 
-byte quack_B       = 0xF5;
-byte iamhere       = 0xF6;
+// QuackPack
+// byte User_ID      = 0xF5;
+// byte Message_ID   = 0xF6;
+byte quacket_B    = 0xF6;
+
+byte iamhere       = 0xF7;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -333,13 +345,28 @@ Sends Payload (offline Data Struct as Bytes)
 Shows Sent Data
 */
 
+void sendQuacks(String deviceID, String messageID, String payload)
+{
+  LoRa.beginPacket();
+  couple(quacket_B, deviceID);
+  couple(quacket_B, messageID);
+  couple(quacket_B, payload);
+  LoRa.endPacket();
+}
+
 void sendPayload(Data offline)
 {
   LoRa.beginPacket();
 
   if(QuackPack  == true)
   {
+    // couple(User_ID, offline.deviceID);
+    // couple(Message_ID, String(random(999)));
+    // couple(Quack_, String(random(999)));
     QuackPayload();
+
+    // couple(quacket_B, quacket());
+
   }
   else
   {
@@ -438,7 +465,7 @@ receive
 Reads and Parses Received Packets
 @param packetSize
 */
-String quackArray[PAYLOADSIZE];
+// String quackArray[PAYLOADSIZE];
 
 void receive(int packetSize)
 {
@@ -462,13 +489,19 @@ void receive(int packetSize)
       byteCode = LoRa.read();
       mLength  = LoRa.read();
 
-      if (byteCode == quack_B)
+      if (byteCode == quacket_B)
       {
+
         offline.whoAmI = "quackpack";
-        for (int i = 0; i < PAYLOADSIZE; i++)
-        {
-          quackArray[i] = readMessages(mLength);
-        }
+
+        qtest.deviceID  = readMessages(mLength);
+        qtest.messageID = readMessages(mLength);
+        qtest.payload   = readMessages(mLength);
+
+        // for (int i = 0; i < PAYLOADSIZE; i++)
+        // {
+        //   quackArray[i] = readMessages(mLength);
+        // }
       }
       else if (byteCode == whoAmI_B)
       {

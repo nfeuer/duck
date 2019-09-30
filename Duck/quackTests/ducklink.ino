@@ -19,8 +19,10 @@ void setup()
   // }
 
   #ifdef QUACKPACK
-    setupQuack();
-    Serial.println("MamaQuack - Setup");
+  setupQuack();
+  QuackPack = true;
+
+  Serial.println("MamaQuack - Setup");
   #endif
 
 

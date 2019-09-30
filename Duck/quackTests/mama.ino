@@ -19,8 +19,8 @@ void setup()
   // }
 
   #ifdef QUACKPACK
-    setupQuack();
-    Serial.println("MamaQuack - Setup");
+  setupQuack();
+  Serial.println("MamaQuack - Setup");
   #endif
 
 
@@ -56,11 +56,9 @@ void loop()
   if(offline.whoAmI == "quackpack")
   {
     LoRa.beginPacket();
-    for(int i = 0; i < PAYLOADSIZE; i++)
-    {
-      couple(quack_B, quackArray[i]);
-    }
-    byte b = LoRa.random();
+    couple(quacket_B, qtest.deviceID);
+    couple(quacket_B, qtest.messageID);
+    couple(quacket_B, qtest.payload);
     LoRa.endPacket();
   }
   else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf(empty.duckID) < 0) {
