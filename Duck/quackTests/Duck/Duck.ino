@@ -16,19 +16,20 @@ un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
-#define DL
-const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+//#define DL
+//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-// #define MD
-// const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-// #define PD
-// const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
-bool QuackPack = false;
-// int numPayloads = 0;
+bool QuackPack = false; //DONT TOUCH
 
-#define QUACKPACK
+//Define if there is a quackPack for this device
+//#define QUACKPACK
+#define MAMAQUACK //Only define if MD is defined and has quackPack
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -130,11 +131,11 @@ byte msgId_B      = 0xF4;
 byte path_B       = 0xF3;
 
 // QuackPack
-// byte User_ID      = 0xF5;
-// byte Message_ID   = 0xF6;
-byte quacket_B    = 0xF6;
+byte user_ID      = 0xF5;
+byte message_ID   = 0xF6;
+byte quacket_B    = 0xF7;
 
-byte iamhere       = 0xF7;
+byte iamhere       = 0xF8;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -348,9 +349,10 @@ Shows Sent Data
 void sendQuacks(String deviceID, String messageID, String payload)
 {
   LoRa.beginPacket();
-  couple(quacket_B, deviceID);
-  couple(quacket_B, messageID);
+  couple(user_ID, deviceID);
+  couple(message_ID, messageID);
   couple(quacket_B, payload);
+  couple(path_B, deviceID);
   LoRa.endPacket();
 }
 
@@ -358,18 +360,13 @@ void sendPayload(Data offline)
 {
   LoRa.beginPacket();
 
-  if(QuackPack  == true)
-  {
-    // couple(User_ID, offline.deviceID);
-    // couple(Message_ID, String(random(999)));
-    // couple(Quack_, String(random(999)));
-    QuackPayload();
-
-    // couple(quacket_B, quacket());
-
-  }
-  else
-  {
+//  if(QuackPack  == true)
+//  {
+//    QuackPayload();
+//    
+//  }
+//  else
+//  {
     couple(msgId_B, offline.messageId);
     couple(whoAmI_B, offline.whoAmI);
     couple(duckID_B, offline.duckID);
@@ -393,7 +390,7 @@ void sendPayload(Data offline)
     couple(msg_B, offline.msg);
 
     couple(path_B, offline.path);
-  }
+//  }
   LoRa.endPacket();
 }
 
@@ -488,20 +485,20 @@ void receive(int packetSize)
     {
       byteCode = LoRa.read();
       mLength  = LoRa.read();
-
-      if (byteCode == quacket_B)
+      if (byteCode == user_ID)
       {
-
         offline.whoAmI = "quackpack";
 
         qtest.deviceID  = readMessages(mLength);
+        Serial.print(qtest.deviceID);
+      }
+      else if(byteCode == message_ID) {
         qtest.messageID = readMessages(mLength);
-        qtest.payload   = readMessages(mLength);
-
-        // for (int i = 0; i < PAYLOADSIZE; i++)
-        // {
-        //   quackArray[i] = readMessages(mLength);
-        // }
+        Serial.print(qtest.messageID);
+      }
+      else if(byteCode == quacket_B) {
+        qtest.payload = readMessages(mLength);
+        Serial.print(qtest.payload);
       }
       else if (byteCode == whoAmI_B)
       {
@@ -561,8 +558,7 @@ void receive(int packetSize)
       }
       else if (byteCode == msg_B)
       {
-        offline.msg = readMessages(mLength) + rssi + ",";
-        offline.msg = offline.msg + snr + ",";
+        offline.msg = readMessages(mLength);
       }
       else if (byteCode == path_B)
       {
@@ -575,6 +571,6 @@ void receive(int packetSize)
     }
   }
 
-  showReceivedData();
+  //showReceivedData();
   //jsonify(offline);
 }

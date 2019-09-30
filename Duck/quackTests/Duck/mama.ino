@@ -1,4 +1,7 @@
 #ifdef MD
+#include "timer.h"
+
+auto timer = timer_create_default(); // create a timer with default settings
 
 void setup()
 {
@@ -6,39 +9,31 @@ void setup()
 
   iAm = "mama-duck";
   empty.whoAmI = "mama-duck";
-  // setupDuck();
+  setupDuck();
+  offline.duckID = "A";
+  empty.duckID = "A";
 
-  // setupDisplay();
+  setupDisplay();
   setupLoRa();
-  // setupPortal();
+  setupPortal();
 
-  // if(QuackPack == true)
-  // {
-  //   Serial.println("MamaQuack - Setup");
-  //   setupQuack();
-  // }
-
-  #ifdef QUACKPACK
+  #ifdef MAMAQUACK
   setupQuack();
   Serial.println("MamaQuack - Setup");
   #endif
 
+  if(QuackPack == false) timer.every(1800000, imAlive);
 
-  // Serial.println("Mama Online");
-  // u8x8.drawString(0, 1, "Mama Online");
+  Serial.println("Mama Online");
+  u8x8.drawString(0, 1, "Mama Online");
 }
 
 void loop()
 {
-
-  // if(QuackPack == true)
-  // {
-  //   Serial.println("MamaQuack - Loop");
-  //   loopQuack();
-  //
-  //   Serial.println("MamaQuack - Payload");
-  //   sendPayload(empty);
-  // }
+  if(QuackPack == true)
+  {
+    loopQuack();
+  }
 
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
@@ -55,11 +50,8 @@ void loop()
   //  strstr(offline.path.toCharArray, empty.duckID) != NULL
   if(offline.whoAmI == "quackpack")
   {
-    LoRa.beginPacket();
-    couple(quacket_B, qtest.deviceID);
-    couple(quacket_B, qtest.messageID);
-    couple(quacket_B, qtest.payload);
-    LoRa.endPacket();
+    sendQuacks(qtest.deviceID, qtest.messageID, qtest.payload);
+    offline.whoAmI = empty.whoAmI;
   }
   else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf(empty.duckID) < 0) {
     offline.path = offline.path + "," + empty.duckID;
@@ -72,6 +64,12 @@ void loop()
 
   // Sends Duck Stat every 30 minutes
   sendDuckStat(offline);
+}
+
+bool imAlive(void *){
+  
+  Serial.print("alive");
+  return true;
 }
 
 #endif

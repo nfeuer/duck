@@ -95,6 +95,7 @@ void loop()
   if(offline.whoAmI == "quackpack")
   {
     quackJson();
+    offline.whoAmI = empty.whoAmI;
   }
   else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
@@ -210,10 +211,10 @@ void quackJson()
   JsonObject& quack_data   = quack.createNestedObject("Data");
 
   quack_data["Device ID"]        = qtest.deviceID;
-  quack_data["Device ID"]        = qtest.messageID;
-  quack_data["Device ID"]        = qtest.payload;
+  quack_data["Message ID"]       = qtest.messageID;
+  quack_data["Payload"]          = qtest.payload;
 
-  root["path"]                = offline.path;
+  root["path"]                = offline.path + "," + empty.duckID;
 
   String jsonstat;
   root.printTo(jsonstat);

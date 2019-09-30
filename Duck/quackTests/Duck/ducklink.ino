@@ -4,13 +4,13 @@ void setup()
 {
   Serial.begin(115200);
 
-  iAm = "mama-duck";
-  empty.whoAmI = "mama-duck";
-  // setupDuck();
+  iAm = "duck";
+  empty.whoAmI = "duck";
+  setupDuck();
 
-  // setupDisplay();
+  setupDisplay();
   setupLoRa();
-  // setupPortal();
+  setupPortal();
 
   // if(QuackPack == true)
   // {
@@ -21,6 +21,9 @@ void setup()
   #ifdef QUACKPACK
   setupQuack();
   QuackPack = true;
+  iAm = "quackpack";
+  offline.whoAmI = "quackpack";
+  empty.whoAmI = "quackpack";
 
   Serial.println("MamaQuack - Setup");
   #endif
@@ -35,11 +38,11 @@ void loop()
 
   if(QuackPack == true)
   {
-    Serial.println("MamaQuack - Loop");
+    //Serial.println("MamaQuack - Loop");
     loopQuack();
 
-    Serial.println("MamaQuack - Payload");
-    sendPayload(empty);
+    //Serial.println("MamaQuack - Payload");
+    //sendPayload(empty);
   }
 
   // ⚠️ Parses Civilian Requests into Data Structure
