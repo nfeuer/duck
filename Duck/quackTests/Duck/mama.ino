@@ -35,7 +35,7 @@ void loop()
 {
   if(QuackPack == true)
   {
-    //loopQuack();
+    loopQuack();
   } else {
     timer2.tick();
   }

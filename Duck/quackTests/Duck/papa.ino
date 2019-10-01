@@ -122,27 +122,20 @@ void jsonify(Data offline)
 
   JsonObject& root = jsonBuffer.createObject();
 
-  root["uuid"]                 = offline.messageId;
+  root["DeviceID"]        = offline.duckID;
+  root["MessageID"]       = offline.messageId;
+  root["Payload"]         = offline.fname + "*" + 
+                            offline.phone + "*" +
+                            offline.street + "*" +
+                            offline.occupants + "*" +
+                            offline.danger + "*" +
+                            offline.vacant + "*" +
+                            offline.firstaid + "*" +
+                            offline.water + "*" +
+                            offline.food + "*" +
+                            offline.msg + "*";
 
-  JsonObject& civilian = root.createNestedObject("civilian");
-
-  JsonObject& civilian_info   = civilian.createNestedObject("info");
-  civilian_info["name"]       = offline.fname;
-  civilian_info["phone"]      = offline.phone;
-  civilian_info["location"]   = offline.street;
-  civilian_info["occupants"]  = offline.occupants;
-
-  JsonObject& civilian_status = civilian.createNestedObject("status");
-  civilian_status["danger"]   = offline.danger;
-  civilian_status["vacant"]   = offline.vacant ;
-
-  JsonObject& civilian_need   = civilian.createNestedObject("needs");
-  civilian_need["first-aid"]  = offline.firstaid;
-  civilian_need["water"]      = offline.water;
-  civilian_need["food"]       = offline.food;
-  civilian["message"]         = offline.msg;
-
-  root["path"]                = offline.path;
+  root["path"]            = offline.path;
 
   String jsonstat;
   root.printTo(jsonstat);
@@ -199,22 +192,17 @@ String makeId() {
 
 void quackJson()
 {
-  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
+  const int bufferSize = 4 * JSON_OBJECT_SIZE(1);
   DynamicJsonBuffer jsonBuffer(bufferSize);
 
   JsonObject& root = jsonBuffer.createObject();
 
-  // root["uuid"]                 = offline.messageId;
 
-  JsonObject& quack = root.createNestedObject("Quacks");
+  root["DeviceID"]        = qtest.deviceID;
+  root["MessageID"]       = qtest.messageID;
+  root["Payload"]         = qtest.payload;
 
-  JsonObject& quack_data   = quack.createNestedObject("Data");
-
-  quack_data["DeviceID"]        = qtest.deviceID;
-  quack_data["MessageID"]       = qtest.messageID;
-  quack_data["Payload"]          = qtest.payload;
-
-  root["path"]                = offline.path + "," + empty.duckID;
+  root["path"]            = offline.path + "," + empty.duckID;
 
   String jsonstat;
   root.printTo(jsonstat);
