@@ -25,11 +25,14 @@ bool QuackPack = false; //DONT TOUCH
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+
+//#define DETECTOR
+//const char *AP = "remove dependancy";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -135,7 +138,7 @@ byte user_ID      = 0xF5;
 byte message_ID   = 0xF6;
 byte quacket_B    = 0xF7;
 
-byte iamhere       = 0xF8;
+byte iamhere      = 0xF8;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -500,6 +503,15 @@ void receive(int packetSize)
         qtest.payload = readMessages(mLength);
         Serial.print(qtest.payload);
       }
+      else if (byteCode == iamhere) { //DetectorDuck
+        String ping = readMessages(mLength);
+        if(ping == "0") {
+          pong();
+        } else if(ping == "1" && empty.whoAmI == "duckDetector") {
+          Serial.println(ping);
+          offline.msg = rssi;
+        }
+      }
       else if (byteCode == whoAmI_B)
       {
         offline.whoAmI = readMessages(mLength);
@@ -574,3 +586,10 @@ void receive(int packetSize)
   //showReceivedData();
   //jsonify(offline);
 }
+
+
+void pong() {
+  LoRa.beginPacket();
+  couple(iamhere, "1");
+  LoRa.endPacket();
+  }
