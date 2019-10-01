@@ -331,8 +331,6 @@ void couple(byte byteCode, String outgoing)
   LoRa.write(outgoing.length());      // add payload length
   LoRa.print(outgoing);               // add payload
 
-  //   Displays Sent Data on OLED and Serial Monitor
-  //   Serial.println("Parameter: " + outgoing);
 }
 
 /**
@@ -355,37 +353,30 @@ void sendPayload(Data offline)
 {
   LoRa.beginPacket();
 
-//  if(QuackPack  == true)
-//  {
-//    QuackPayload();
-//    
-//  }
-//  else
-//  {
-    couple(msgId_B, offline.messageId);
-    couple(whoAmI_B, offline.whoAmI);
-    couple(duckID_B, offline.duckID);
-    couple(whereAmI_B, offline.whereAmI);
-    couple(runTime_B, offline.runTime);
+  couple(msgId_B, offline.messageId);
+  couple(whoAmI_B, offline.whoAmI);
+  couple(duckID_B, offline.duckID);
+  couple(whereAmI_B, offline.whereAmI);
+  couple(runTime_B, offline.runTime);
 
-    //couple(fromCiv_B, 0);
+  //couple(fromCiv_B, 0);
 
-    couple(fname_B, offline.fname);
-    couple(street_B, offline.street);
-    couple(phone_B, offline.phone);
-    couple(occupants_B, offline.occupants);
+  couple(fname_B, offline.fname);
+  couple(street_B, offline.street);
+  couple(phone_B, offline.phone);
+  couple(occupants_B, offline.occupants);
 
-    couple(danger_B, offline.danger);
-    couple(vacant_B, offline.vacant);
+  couple(danger_B, offline.danger);
+  couple(vacant_B, offline.vacant);
 
-    couple(firstaid_B, offline.firstaid);
-    couple(water_B, offline.water);
-    couple(food_B, offline.food);
+  couple(firstaid_B, offline.firstaid);
+  couple(water_B, offline.water);
+  couple(food_B, offline.food);
 
-    couple(msg_B, offline.msg);
+  couple(msg_B, offline.msg);
 
-    couple(path_B, offline.path);
-//  }
+  couple(path_B, offline.path);
+
   LoRa.endPacket();
 }
 
@@ -583,4 +574,4 @@ void pong() {
   LoRa.beginPacket();
   couple(iamhere, "1");
   LoRa.endPacket();
-  }
+}
