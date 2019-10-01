@@ -25,6 +25,7 @@ void setup()
   #endif
 
   if(QuackPack == false) timer2.every(1800000, imAlive); //Report still running
+  //if(QuackPack == false) timer2.every(5000, imAlive); //Report still running test
 
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
@@ -72,6 +73,7 @@ void loop()
 
 bool imAlive(void *){
   
+  sendQuacks(empty.duckID, "message id here", "1"); //Send data
   Serial.print("alive");
   return true;
 }

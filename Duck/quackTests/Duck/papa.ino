@@ -210,8 +210,8 @@ void quackJson()
 
   JsonObject& quack_data   = quack.createNestedObject("Data");
 
-  quack_data["Device ID"]        = qtest.deviceID;
-  quack_data["Message ID"]       = qtest.messageID;
+  quack_data["DeviceID"]        = qtest.deviceID;
+  quack_data["MessageID"]       = qtest.messageID;
   quack_data["Payload"]          = qtest.payload;
 
   root["path"]                = offline.path + "," + empty.duckID;

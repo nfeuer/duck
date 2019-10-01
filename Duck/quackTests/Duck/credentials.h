@@ -3,8 +3,8 @@
 #ifndef __CREDENTIALS_H__
 #define __CREDENTIALS_H__
 
-#define SSID        "" // Type your SSID
-#define PASSWORD    "" // Type your Password
+#define SSID        "HEINEKEN" // Type your SSID
+#define PASSWORD    "duckduckowl" // Type your Password
 
 
 
