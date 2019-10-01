@@ -29,8 +29,8 @@ void setup()
   #endif
 
 
-  // Serial.println("Mama Online");
-  // u8x8.drawString(0, 1, "Mama Online");
+   Serial.println("Duck Online");
+   u8x8.drawString(0, 1, "Duck Online");
 }
 
 void loop()
@@ -38,27 +38,19 @@ void loop()
 
   if(QuackPack == true)
   {
-    //Serial.println("MamaQuack - Loop");
     loopQuack();
-
-    //Serial.println("MamaQuack - Payload");
-    //sendPayload(empty);
   }
 
-  // ⚠️ Parses Civilian Requests into Data Structure
-  // readData();
-  // if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
-  // {
-  //   Serial.println("Start Send");
-  //   sendPayload(offline);
-  //   Serial.print("Sending Wifi Data from Mama\n");
-  //   offline = empty;
-  //   offline.fromCiv = 0;
-  // }
-
-
-  // Sends Duck Stat every 30 minutes
-  // sendDuckStat(offline);
+   // Parses Civilian Requests into Data Structure
+   readData();
+   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
+   {
+     Serial.println("Start Send");
+     sendPayload(offline);
+     Serial.print("Sending Wifi Data from Mama\n");
+     offline = empty;
+     offline.fromCiv = 0;
+   }
 }
 
 #endif

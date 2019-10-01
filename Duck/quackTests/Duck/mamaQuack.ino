@@ -1,10 +1,12 @@
 // If Quack is Defined in SetUp QuackPack will be Compiled with rest of MamaQuack
 #ifdef MAMAQUACK
 #include <SFE_BMP180.h>
+#include "timer.h"
 
 // // Simple Boilerplate for 3rd Party Devs (QuackHackers)
 
 SFE_BMP180 pressure;
+auto timer = timer_create_default(); // create a timer with default settings
 
 typedef struct
 {
@@ -32,7 +34,7 @@ void setupQuack()
   }
 
 
-  timer.every(3000, getSensorData);
+  timer.every(5000, getSensorData);
 
   Serial.begin(115200);
   Serial.print("setupMamaQuack()");

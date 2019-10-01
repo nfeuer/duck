@@ -15,21 +15,21 @@
 un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
 
-// Recommendation First compile Mama board, then reverse and compile Papa board
-//#define DL
-//const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
-
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
-
-//#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
-
 bool QuackPack = false; //DONT TOUCH
 
 //Define if there is a quackPack for this device
-//#define QUACKPACK
-#define MAMAQUACK //Only define if MD is defined and has quackPack
+#define QUACKPACK
+//#define MAMAQUACK //Only define if MD is defined
+
+// Recommendation First compile Mama board, then reverse and compile Papa board
+#define DL
+const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
+
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;

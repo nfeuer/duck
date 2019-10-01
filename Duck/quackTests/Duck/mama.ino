@@ -1,7 +1,8 @@
 #ifdef MD
 #include "timer.h"
 
-auto timer = timer_create_default(); // create a timer with default settings
+auto timer2 = timer_create_default(); // create a timer with default settings
+
 
 void setup()
 {
@@ -18,11 +19,12 @@ void setup()
   setupPortal();
 
   #ifdef MAMAQUACK
+  QuackPack = true;
   setupQuack();
   Serial.println("MamaQuack - Setup");
   #endif
 
-  if(QuackPack == false) timer.every(1800000, imAlive);
+  if(QuackPack == false) timer2.every(1800000, imAlive); //Report still running
 
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
@@ -32,7 +34,9 @@ void loop()
 {
   if(QuackPack == true)
   {
-    loopQuack();
+    //loopQuack();
+  } else {
+    timer2.tick();
   }
 
   // ⚠️ Parses Civilian Requests into Data Structure
