@@ -1,8 +1,7 @@
 #ifdef MD
 #include "timer.h"
 
-auto timer2 = timer_create_default(); // create a timer with default settings
-
+auto timer = timer_create_default(); // create a timer with default settings
 
 void setup()
 {
@@ -14,7 +13,8 @@ void setup()
   offline.duckID = "A";
   empty.duckID = "A";
 
-  setupDisplay();
+  //Setup interfaces
+  setupDisplay(); //Should probably turn off
   setupLoRa();
   setupPortal();
 
@@ -24,8 +24,8 @@ void setup()
   Serial.println("MamaQuack - Setup");
   #endif
 
-  if(QuackPack == false) timer2.every(1800000, imAlive); //Report still running
-  //if(QuackPack == false) timer2.every(5000, imAlive); //Report still running test
+  if(QuackPack == false) timer.every(1800000, imAlive); //Report still running
+  timer.every(43200000, reboot);
 
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
@@ -33,14 +33,13 @@ void setup()
 
 void loop()
 {
-  if(QuackPack == true)
-  {
-    //loopQuack();
+  if(QuackPack == true) {
+    loopQuack();
   } else {
-    timer2.tick();
+    timer.tick();
   }
 
-  // ⚠️ Parses Civilian Requests into Data Structure
+  //Parses Civilian Requests into Data Structure
   readData();
   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
@@ -52,8 +51,7 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  //  strstr(offline.path.toCharArray, empty.duckID) != NULL
-  if(offline.whoAmI == "quackpack")
+  if(offline.whoAmI == "quackpack" && offline.path.indexOf(empty.duckID) < 0)
   {
     sendQuacks(qtest.deviceID, qtest.messageID, qtest.payload);
     offline.whoAmI = empty.whoAmI;
@@ -66,9 +64,7 @@ void loop()
     sendPayload(offline);
     offline = empty;
   }
-
-  // Sends Duck Stat every 30 minutes
-  sendDuckStat(offline);
+  
 }
 
 bool imAlive(void *){
@@ -76,6 +72,13 @@ bool imAlive(void *){
   sendQuacks(empty.duckID, "message id here", "1"); //Send data
   Serial.print("alive");
   return true;
+}
+
+bool reboot(void *){
+  sendQuacks(empty.duckID, "message id here", "Reboot");
+  restartDuck();
+  
+  retrun true;
 }
 
 #endif

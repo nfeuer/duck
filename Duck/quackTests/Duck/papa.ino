@@ -220,19 +220,4 @@ void quackJson()
   }
 }
 
-
-//void publishData(String data)
-//{
-//  if (client.publish(topic, data.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
-//}
-
 #endif

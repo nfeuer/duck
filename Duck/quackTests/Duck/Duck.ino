@@ -19,7 +19,7 @@ bool QuackPack = false; //DONT TOUCH
 
 //Define if there is a quackPack for this device
 //#define QUACKPACK
-//#define MAMAQUACK //Only define if MD is defined
+#define MAMAQUACK //Only define if MD is defined
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
@@ -240,14 +240,6 @@ void setupPortal()
     // ESP.restart();
   });
 
-  // webServer.on("/stat",[]()
-  // {
-  //   server.send(200,"text/plain", "Sending Status...");
-  //   dStat = true;
-  //   delay(1000);
-  //   ESP.restart();
-  // });
-
   webServer.on("/mac", []() {
     String    page = "<h1>Duck Mac Address</h1><h3>Data:</h3> <h4>" + offline.duckID + "</h4>";
     webServer.send(200, "text/html", page);
@@ -355,7 +347,7 @@ void sendQuacks(String deviceID, String messageID, String payload)
   couple(user_ID, deviceID);
   couple(message_ID, messageID);
   couple(quacket_B, payload);
-  couple(path_B, deviceID);
+  couple(path_B, offline.path + "," + deviceID);
   LoRa.endPacket();
 }
 
@@ -465,7 +457,6 @@ receive
 Reads and Parses Received Packets
 @param packetSize
 */
-// String quackArray[PAYLOADSIZE];
 
 void receive(int packetSize)
 {
