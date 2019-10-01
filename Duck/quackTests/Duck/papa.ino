@@ -75,11 +75,12 @@ void loop()
 {
   if(WiFi.status() != WL_CONNECTED)
   {
-    Serial.println("WiFi disconnected, reconnecting to local network");
+    Serial.print("WiFi disconnected, reconnecting to local network: ");
+    Serial.print(SSID);
     setupWiFi();
   }
   setupMQTT();
-  
+
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
@@ -91,7 +92,12 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
+  if(offline.whoAmI == "quackpack")
+  {
+    quackJson();
+    offline.whoAmI = empty.whoAmI;
+  }
+  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     offline.path = offline.path + "," + empty.duckID;
     Serial.println(offline.path);
@@ -102,7 +108,6 @@ void loop()
     Serial.print("Parsing LoRa Data");
     offline = empty;
   }
-
 }
 
 /**
@@ -142,7 +147,7 @@ void jsonify(Data offline)
   String jsonstat;
   root.printTo(jsonstat);
   root.prettyPrintTo(Serial);
-  
+
   if (client.publish(topic, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
@@ -174,34 +179,58 @@ void duckData(Data offline)
 
   String jsonstat;
   root.printTo(jsonstat);
-  
-//  if (client.publish(topic2, jsonstat.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
 }
 
 String makeId() {
   char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
   char uuid[9];
 
-  for(int i = 0; i <= 3; i++) {
+  for(int i = 0; i <= 3; i++)
+  {
     uuid[i] = items[random(0,35)];
   }
   uuid[9] = '\0';
 
   String str = String(uuid);
-  
+
   return  str;
-  
+
 }
 
+void quackJson()
+{
+  const int bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 2 * JSON_OBJECT_SIZE(4);
+  DynamicJsonBuffer jsonBuffer(bufferSize);
+
+  JsonObject& root = jsonBuffer.createObject();
+
+  // root["uuid"]                 = offline.messageId;
+
+  JsonObject& quack = root.createNestedObject("Quacks");
+
+  JsonObject& quack_data   = quack.createNestedObject("Data");
+
+  quack_data["Device ID"]        = qtest.deviceID;
+  quack_data["Message ID"]       = qtest.messageID;
+  quack_data["Payload"]          = qtest.payload;
+
+  root["path"]                = offline.path + "," + empty.duckID;
+
+  String jsonstat;
+  root.printTo(jsonstat);
+  root.prettyPrintTo(Serial);
+
+  if (client.publish(topic, jsonstat.c_str()))
+  {
+    Serial.println("Publish ok");
+    root.prettyPrintTo(Serial);
+    Serial.println("");
+  }
+  else
+  {
+    Serial.println("Publish failed");
+  }
+}
 
 
 //void publishData(String data)

@@ -8,11 +8,11 @@
 #include <DNSServer.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-#include "indexBeta.h"
+#include "index.h"
 #include "credentials.h"
 
 /***************************************************
-  un/comment lines to compile Ducklink/Mama/Papa
+un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
@@ -24,6 +24,12 @@ const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
 //const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+
+bool QuackPack = false; //DONT TOUCH
+
+//Define if there is a quackPack for this device
+//#define QUACKPACK
+#define MAMAQUACK //Only define if MD is defined and has quackPack
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -40,8 +46,8 @@ DNSServer dnsServer;
 const byte DNS_PORT = 53;
 
 /**
-   Hotspot/Access Point (🐥 DuckLink 🆘 )
-   Local DNS (duck.local)
+Hotspot/Access Point (🐥 DuckLink 🆘 )
+Local DNS (duck.local)
 */
 //const char *AP   = " 🆘 EMERGENCY PORTAL";
 
@@ -54,9 +60,9 @@ String iAm = "Civ";
 String runTime;
 
 /**
-   Tracer for debugging purposes
-   Toggle (trace = 1) to print offlineements in Serial
-   Toggle (trace = 0) to turn off offlineements
+Tracer for debugging purposes
+Toggle (trace = 1) to print offlineements in Serial
+Toggle (trace = 0) to turn off offlineements
 */
 int trace         = 0;
 
@@ -91,6 +97,15 @@ typedef struct
   String path;
 } Data;
 
+typedef struct
+{
+  String deviceID;
+  String messageID;
+  String payload;
+} QuackTest;
+
+QuackTest qtest;
+
 Data offline;
 Data empty;
 
@@ -114,6 +129,13 @@ byte msg_B        = 0xE4;
 
 byte msgId_B      = 0xF4;
 byte path_B       = 0xF3;
+
+// QuackPack
+byte user_ID      = 0xF5;
+byte message_ID   = 0xF6;
+byte quacket_B    = 0xF7;
+
+byte iamhere       = 0xF8;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -150,15 +172,15 @@ void setupLoRa()
 }
 
 /**
-   showReceivedstat
-   Displays Received stat on OLED and Serial Monitor
+showReceivedstat
+Displays Received stat on OLED and Serial Monitor
 */
 void showReceivedData()
 {
   /**
-     The total time it took for PAPA to create a packet,
-     send it to MAMA. MAMA parsing victim requests, and
-     send it back to PAPA.
+  The total time it took for PAPA to create a packet,
+  send it to MAMA. MAMA parsing victim requests, and
+  send it back to PAPA.
   */
   String waiting = String(millis() - lastSendTime);
 
@@ -244,8 +266,8 @@ void setupPortal()
 }
 
 /**
-  restart
-  Only restarts ESP
+restart
+Only restarts ESP
 */
 void restartDuck()
 {
@@ -254,9 +276,9 @@ void restartDuck()
 }
 
 /**
-   readyData
-   Reads WebServer Parameters and couples into Data Struct
-   @return coupled Data Struct
+readyData
+Reads WebServer Parameters and couples into Data Struct
+@return coupled Data Struct
 */
 void readData()
 {
@@ -319,42 +341,57 @@ void couple(byte byteCode, String outgoing)
 }
 
 /**
-   sendPayload
-   Sends Payload (offline Data Struct as Bytes)
-   Shows Sent Data
+sendPayload
+Sends Payload (offline Data Struct as Bytes)
+Shows Sent Data
 */
+
+void sendQuacks(String deviceID, String messageID, String payload)
+{
+  LoRa.beginPacket();
+  couple(user_ID, deviceID);
+  couple(message_ID, messageID);
+  couple(quacket_B, payload);
+  couple(path_B, deviceID);
+  LoRa.endPacket();
+}
 
 void sendPayload(Data offline)
 {
   LoRa.beginPacket();
-  couple(msgId_B, offline.messageId);
-  couple(whoAmI_B, offline.whoAmI);
-  couple(duckID_B, offline.duckID);
-  couple(whereAmI_B, offline.whereAmI);
-  couple(runTime_B, offline.runTime);
 
-  //couple(fromCiv_B, 0);
+//  if(QuackPack  == true)
+//  {
+//    QuackPayload();
+//    
+//  }
+//  else
+//  {
+    couple(msgId_B, offline.messageId);
+    couple(whoAmI_B, offline.whoAmI);
+    couple(duckID_B, offline.duckID);
+    couple(whereAmI_B, offline.whereAmI);
+    couple(runTime_B, offline.runTime);
 
-  couple(fname_B, offline.fname);
-  couple(street_B, offline.street);
-  couple(phone_B, offline.phone);
-  couple(occupants_B, offline.occupants);
+    //couple(fromCiv_B, 0);
 
-  couple(danger_B, offline.danger);
-  couple(vacant_B, offline.vacant);
+    couple(fname_B, offline.fname);
+    couple(street_B, offline.street);
+    couple(phone_B, offline.phone);
+    couple(occupants_B, offline.occupants);
 
-  couple(firstaid_B, offline.firstaid);
-  couple(water_B, offline.water);
-  couple(food_B, offline.food);
+    couple(danger_B, offline.danger);
+    couple(vacant_B, offline.vacant);
 
-  couple(msg_B, offline.msg);
+    couple(firstaid_B, offline.firstaid);
+    couple(water_B, offline.water);
+    couple(food_B, offline.food);
 
-  couple(path_B, offline.path);
+    couple(msg_B, offline.msg);
+
+    couple(path_B, offline.path);
+//  }
   LoRa.endPacket();
-
-  msgCount++;                                   // increment message ID
-
-  delay(5000);
 }
 
 //Send duckStat every 30 minutes
@@ -416,17 +453,17 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-  //Serial.println(incoming);
-
   return incoming;
 }
 // Mama and Papa
 
 /**
-   receive
-   Reads and Parses Received Packets
-   @param packetSize
+receive
+Reads and Parses Received Packets
+@param packetSize
 */
+// String quackArray[PAYLOADSIZE];
+
 void receive(int packetSize)
 {
   if (packetSize != 0)
@@ -448,8 +485,22 @@ void receive(int packetSize)
     {
       byteCode = LoRa.read();
       mLength  = LoRa.read();
+      if (byteCode == user_ID)
+      {
+        offline.whoAmI = "quackpack";
 
-      if (byteCode == whoAmI_B)
+        qtest.deviceID  = readMessages(mLength);
+        Serial.print(qtest.deviceID);
+      }
+      else if(byteCode == message_ID) {
+        qtest.messageID = readMessages(mLength);
+        Serial.print(qtest.messageID);
+      }
+      else if(byteCode == quacket_B) {
+        qtest.payload = readMessages(mLength);
+        Serial.print(qtest.payload);
+      }
+      else if (byteCode == whoAmI_B)
       {
         offline.whoAmI = readMessages(mLength);
       }
@@ -507,8 +558,7 @@ void receive(int packetSize)
       }
       else if (byteCode == msg_B)
       {
-        offline.msg = readMessages(mLength) + rssi + ",";
-        offline.msg = offline.msg + snr + ",";
+        offline.msg = readMessages(mLength);
       }
       else if (byteCode == path_B)
       {
@@ -519,11 +569,8 @@ void receive(int packetSize)
         offline.messageId = readMessages(mLength);
       }
     }
-    showReceivedData();
-    //jsonify(offline);
   }
-  else
-  {
-    return;
-  }
+
+  //showReceivedData();
+  //jsonify(offline);
 }
