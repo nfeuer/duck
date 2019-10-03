@@ -25,7 +25,8 @@ void setup()
   #endif
 
   if(QuackPack == false) timer.every(1800000, imAlive); //Report still running
-  timer.every(43200000, reboot);
+  //timer.every(43200000, reboot);
+  timer.every(10800000, reboot);
 
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
@@ -34,7 +35,7 @@ void setup()
 void loop()
 {
   if(QuackPack == true) {
-    loopQuack();
+    //loopQuack();
   } else {
     timer.tick();
   }
@@ -69,16 +70,10 @@ void loop()
 
 bool imAlive(void *){
   
-  sendQuacks(empty.duckID, "message id here", "1"); //Send data
+  sendQuacks(empty.duckID, uuidCreator(), "1"); //Send data
   Serial.print("alive");
   return true;
 }
 
-bool reboot(void *){
-  sendQuacks(empty.duckID, "message id here", "Reboot");
-  restartDuck();
-  
-  retrun true;
-}
 
 #endif

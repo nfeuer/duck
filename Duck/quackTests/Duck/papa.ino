@@ -3,9 +3,15 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include "timer.h"
+
+auto timer = timer_create_default(); // create a timer with default settings
 
 WiFiClientSecure wifiClient;
 PubSubClient client(server, 8883, wifiClient);
+
+bool disconnected = false;
+double timeOff = 0;
 
 void setup()
 {
@@ -22,6 +28,8 @@ void setup()
   // setupPortal(); // Toggled Captive Portal from PapaDuck
 
   setupWiFi();
+
+  timer.every(10800000, reboot);
 
   Serial.println("PAPA Online");
   u8x8.drawString(0, 1, "PAPA Online");
@@ -43,6 +51,7 @@ void setupWiFi()
 
   while (WiFi.status() != WL_CONNECTED)
   {
+    timer.tick(); //Advance timer to reboot after awhile
     delay(500);
     Serial.print(".");
   }
@@ -61,11 +70,23 @@ void setupMQTT()
 {
   if (!!!client.connected())
   {
+    if(disconnected) {
+      timeOff = millis();
+    }
     Serial.print("Reconnecting client to "); Serial.println(server);
     while ( ! (ORG == "quickstart" ? client.connect(clientId) : client.connect(clientId, authMethod, token)))
     {
+      timer.tick(); //Advance timer to reboot after awhile
       Serial.print(".");
       delay(500);
+    }
+    if(disconnected) {
+      qtest.payload = "Papa disconnected from WiFi for:" + String(millis() - timeOff); //Record that lost wifi and then reconnected
+      papaHealth();  
+    }
+    else {
+      qtest.payload = "Papa disconnected from MQTT for:" + String(millis() - timeOff); //Record that lost connection to MQTT and then reconnected
+      papaHealth();
     }
     Serial.println();
   }
@@ -78,6 +99,7 @@ void loop()
     Serial.print("WiFi disconnected, reconnecting to local network: ");
     Serial.print(SSID);
     setupWiFi();
+    disconnected = false;
   }
   setupMQTT();
 
@@ -102,12 +124,14 @@ void loop()
     offline.path = offline.path + "," + empty.duckID;
     Serial.println(offline.path);
     jsonify(offline);
-    duckData(offline);
+    //duckData(offline);
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
     Serial.print("Parsing LoRa Data");
     offline = empty;
   }
+
+  timer.tick();
 }
 
 /**
@@ -188,6 +212,12 @@ String makeId() {
 
   return  str;
 
+}
+
+void papaHealth() {
+  qtest.deviceID = empty.whoAmI;
+  qtest.messageID = uuidCreator();
+  quackJson();
 }
 
 void quackJson()

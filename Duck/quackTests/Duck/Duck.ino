@@ -19,20 +19,20 @@ bool QuackPack = false; //DONT TOUCH
 
 //Define if there is a quackPack for this device
 //#define QUACKPACK
-#define MAMAQUACK //Only define if MD is defined
+//#define MAMAQUACK //Only define if MD is defined
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-#define MD
-const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+//#define MD
+//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-//#define PD
-//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+#define PD
+const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 //#define DETECTOR
-//const char *AP = "remove dependancy";
+//const char *AP = "remove dependancy"; //uncomment for detectorDuck
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -61,6 +61,8 @@ String portal = MAIN_page;
 String id = "";
 String iAm = "Civ";
 String runTime;
+
+int rssi_g = 0;
 
 /**
 Tracer for debugging purposes
@@ -341,12 +343,20 @@ Shows Sent Data
 
 void sendQuacks(String deviceID, String messageID, String payload)
 {
-  LoRa.beginPacket();
-  couple(user_ID, deviceID);
-  couple(message_ID, messageID);
-  couple(quacket_B, payload);
-  couple(path_B, offline.path + "," + deviceID);
-  LoRa.endPacket();
+  if(payload.length() > 140)
+  {
+    Serial.println("The length of the payload is too long.");
+  }
+  else
+  {
+    Serial.println("Sending Payload");
+    LoRa.beginPacket();
+    couple(user_ID, deviceID);
+    couple(message_ID, messageID);
+    couple(quacket_B, payload);
+    couple(path_B, offline.path + "," + deviceID);
+    LoRa.endPacket();
+  }
 }
 
 void sendPayload(Data offline)
@@ -490,8 +500,8 @@ void receive(int packetSize)
         if(ping == "0") {
           pong();
         } else if(ping == "1" && empty.whoAmI == "duckDetector") {
-          Serial.println(ping);
-          offline.msg = rssi;
+          Serial.println("Received pong");
+          rssi_g = rssi;
         }
       }
       else if (byteCode == whoAmI_B)
@@ -569,6 +579,34 @@ void receive(int packetSize)
   //jsonify(offline);
 }
 
+String uuidCreator() {
+  byte randomValue;
+  char msg[50];     // Keep in mind SRAM limits
+  int numBytes = 0;
+  int i;
+
+  numBytes = atoi("8");
+  if(numBytes > 0)
+  {
+    memset(msg, 0, sizeof(msg));
+    for(i = 0; i < numBytes; i++) {
+      randomValue = random(0, 37);
+      msg[i] = randomValue + 'a';
+      if(randomValue > 26) {
+        msg[i] = (randomValue - 26) + '0';
+      }
+    }
+  }
+
+  return String(msg);
+}
+
+bool reboot(void *){
+  sendQuacks(empty.duckID, uuidCreator(), "Reboot");
+  restartDuck();
+  
+  return true;
+}
 
 void pong() {
   LoRa.beginPacket();

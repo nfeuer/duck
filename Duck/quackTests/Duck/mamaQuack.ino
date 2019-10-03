@@ -17,7 +17,6 @@ Quack payload;
 
 void setupQuack()
 {
-  QuackPack = true;
   payload.deviceID  = empty.duckID; //Should send as a char
   payload.sensorVal = "";
 
@@ -25,10 +24,19 @@ void setupQuack()
   {
     /* There was a problem detecting the BMP085 ... check your connections */
     Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
-    while(1);
+    QuackPack = false;
+    sendQuacks(payload.deviceID, uuidCreator(), "Sensor failed to start"); //Send data
+    delay(1000);
+    sendQuacks(payload.deviceID, uuidCreator(), "Sensor failed to start"); //Send data
+  } else {
+    QuackPack = true;
+    Serial.println("BMP on");
   }
 
-  timer2.every(5000, getSensorData);
+  if(QuackPack == true) {
+    Serial.println("Start timer");
+    timer2.every(5000, getSensorData);
+  }
   
   Serial.begin(115200);
   Serial.print("setupMamaQuack()");
@@ -51,7 +59,7 @@ bool getSensorData(void *){
 
   payload.sensorVal = "Temp: " + String(T) + " Pres: " + String(P); //Store Data
   
-  sendQuacks(payload.deviceID, "message id here", payload.sensorVal); //Send data
+  sendQuacks(payload.deviceID, uuidCreator(), payload.sensorVal); //Send data
 
   return true;
 }
