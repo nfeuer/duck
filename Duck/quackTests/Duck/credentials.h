@@ -5,6 +5,9 @@
 
 #define SSID        "ADM_Lab_2.4GHz" // Type your SSID
 #define PASSWORD    "gambointernet15" // Type your Password
+//
+//#define SSID    "Hayley"
+//#define PASSWORD "0t8ylihhrxye"
 
 
 

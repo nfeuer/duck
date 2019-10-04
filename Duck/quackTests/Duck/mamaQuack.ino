@@ -1,11 +1,13 @@
 // If Quack is Defined in SetUp QuackPack will be Compiled with rest of MamaQuack
 #ifdef MAMAQUACK
 #include <Adafruit_BMP085_U.h>
+//#include <Adafruit_BMP280.h>
 #include "timer.h"
 
 // Mama Sensor code
 
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
+//Adafruit_BMP280 bmp;
 auto timer2 = timer_create_default(); // create a timer with default settings
 
 typedef struct
@@ -35,7 +37,7 @@ void setupQuack()
 
   if(QuackPack == true) {
     Serial.println("Start timer");
-    timer2.every(5000, getSensorData);
+    timer2.every(300000, getSensorData);
   }
   
   Serial.begin(115200);
@@ -58,9 +60,11 @@ bool getSensorData(void *){
   Serial.println(P);
 
   payload.sensorVal = "Temp: " + String(T) + " Pres: " + String(P); //Store Data
-  
-  sendQuacks(payload.deviceID, uuidCreator(), payload.sensorVal); //Send data
 
+  offline.path = "";
+  sendQuacks(payload.deviceID, uuidCreator(), payload.sensorVal); //Send data
+  offline.path = empty.path;
+  
   return true;
 }
 

@@ -25,11 +25,11 @@ bool QuackPack = false; //DONT TOUCH
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 //#define DETECTOR
 //const char *AP = "remove dependancy"; //uncomment for detectorDuck
@@ -354,7 +354,7 @@ void sendQuacks(String deviceID, String messageID, String payload)
     couple(user_ID, deviceID);
     couple(message_ID, messageID);
     couple(quacket_B, payload);
-    couple(path_B, offline.path + "," + deviceID);
+    couple(path_B, offline.path + "," + empty.whoAmI);
     LoRa.endPacket();
   }
 }

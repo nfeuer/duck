@@ -37,8 +37,10 @@ void loop() {
 }
 
 bool ping(void *) {
+  Serial.print("Ping!");
   if(ponger) {
     ponger = false;
+    Serial.print("Pong!");
   }
   else {
     setColor(0,0,25);

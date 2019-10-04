@@ -10,8 +10,8 @@ void setup()
   iAm = "mama-duck";
   empty.whoAmI = "mama-duck";
   setupDuck();
-  offline.duckID = "A";
-  empty.duckID = "A";
+  offline.duckID = "M";
+  empty.duckID = "M";
 
   //Setup interfaces
   setupDisplay(); //Should probably turn off
@@ -25,11 +25,12 @@ void setup()
   #endif
 
   if(QuackPack == false) timer.every(1800000, imAlive); //Report still running
-  //timer.every(43200000, reboot);
-  timer.every(10800000, reboot);
+  timer.every(43200000, reboot);
+  //timer.every(10800000, reboot);
 
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
+  sendQuacks(empty.duckID, uuidCreator(), "1"); //Send data
 }
 
 void loop()
@@ -52,12 +53,14 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if(offline.whoAmI == "quackpack" && offline.path.indexOf(empty.duckID) < 0)
+  if(offline.whoAmI == "quackpack" && offline.path.indexOf("M") < 0)
   {
+    Serial.println("Debug Test line 58" + offline.path);
     sendQuacks(qtest.deviceID, qtest.messageID, qtest.payload);
     offline.whoAmI = empty.whoAmI;
+    offline.path = empty.path;
   }
-  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf(empty.duckID) < 0) {
+  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf("M") < 0) {
     offline.path = offline.path + "," + empty.duckID;
     sendPayload(offline);
     Serial.print("I'm here");

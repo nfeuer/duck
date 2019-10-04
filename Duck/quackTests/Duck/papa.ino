@@ -161,6 +161,8 @@ void jsonify(Data offline)
 
   root["path"]            = offline.path;
 
+  offline.path = "";
+
   String jsonstat;
   root.printTo(jsonstat);
   root.prettyPrintTo(Serial);
@@ -233,6 +235,8 @@ void quackJson()
   root["Payload"]         = qtest.payload;
 
   root["path"]            = offline.path + "," + empty.duckID;
+
+  offline.path = "";
 
   String jsonstat;
   root.printTo(jsonstat);
