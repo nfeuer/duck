@@ -55,8 +55,10 @@ bool getSensorData(void *){
   float T,P;
   
   bmp.getTemperature(&T);
+  //T = bmp.readTemperature();
   Serial.println(T);
   bmp.getPressure(&P);
+  //P = bmp.readPressure();
   Serial.println(P);
 
   payload.sensorVal = "Temp: " + String(T) + " Pres: " + String(P); //Store Data

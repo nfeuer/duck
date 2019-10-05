@@ -354,7 +354,10 @@ void sendQuacks(String deviceID, String messageID, String payload)
     couple(user_ID, deviceID);
     couple(message_ID, messageID);
     couple(quacket_B, payload);
-    couple(path_B, offline.path + "," + empty.whoAmI);
+    if(offline.path.indexOf(deviceID) < 0 && deviceID != empty.duckID) {
+      offline.path = deviceID;
+    }
+    couple(path_B, offline.path + "," + empty.duckID);
     LoRa.endPacket();
   }
 }
