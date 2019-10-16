@@ -25,11 +25,11 @@ bool QuackPack = false; //DONT TOUCH
 //#define DL
 //const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
-//#define MD
-//const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
+#define MD
+const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
-#define PD
-const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+//#define PD
+//const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
 
 //#define DETECTOR
 //const char *AP = "remove dependancy"; //uncomment for detectorDuck
