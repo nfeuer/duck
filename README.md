@@ -71,5 +71,9 @@ And a lot more.
 ![quackpack](https://user-images.githubusercontent.com/13107225/46578641-dcd40e00-c9d2-11e8-9e54-188181679bb0.png)
 #### Fig. 7 - Early Prototype with Humidity/Temperature + Water Pressure Sensor
 
+## DetectorDuck
+
+The DetectorDuck helps you detect the closest duck =)
+
 
 [Easter Egg](https://media.giphy.com/media/9rjMXZSAvqTxCb1WTh/giphy.gif)
