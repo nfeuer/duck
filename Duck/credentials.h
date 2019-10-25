@@ -3,7 +3,7 @@
 #ifndef __CREDENTIALS_H__
 #define __CREDENTIALS_H__
 
-#define SSID     "
+#define SSID     ""
 #define PASSWORD ""
 
 //#define MQTT_MAX_PACKET_SIZE 1000;
