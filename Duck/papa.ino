@@ -86,7 +86,7 @@ void setupMQTT()
     }
     else {
       qtest.payload = "Papa disconnected from MQTT for:" + String(millis() - timeOff); //Record that lost connection to MQTT and then reconnected
-      papaHealth();
+      //papaHealth();
     }
     Serial.println();
   }
