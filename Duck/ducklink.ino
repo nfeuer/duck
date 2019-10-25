@@ -4,36 +4,46 @@ void setup()
 {
   Serial.begin(115200);
 
-  iAm = "ducklink";
+  iAm = "duck";
+  empty.whoAmI = "duck";
   setupDuck();
 
   setupDisplay();
   setupLoRa();
   setupPortal();
 
-  Serial.println("Ducklink Online");
-  u8x8.drawString(0, 1, "Ducklink Online");
+  #ifdef QUACKPACK
+  setupQuack();
+  QuackPack = true;
+  iAm = "quackpack";
+  offline.whoAmI = "quackpack";
+  empty.whoAmI = "quackpack";
+
+  Serial.println("quackPack - Setup");
+  #endif
+
+  Serial.println("Duck Online");
+  u8x8.drawString(0, 1, "Duck Online");
 }
 
 void loop()
 {
-  // ⚠️ Parses Civilian Requests into Data Structure
-  readData();
-  if (offline.fromCiv == 1 && offline.fname != NULL && offline.fname != "")
+
+  if(QuackPack == true)
   {
-    Serial.println("Start send from DuckLink");
-    sendPayload(offline);
-    //showReceivedData();
-    offline = empty;
-    setupDuck();
-  }
-  else
-  {
-    delay(500);
-    Serial.print(".");
+    loopQuack();
   }
 
-  // Sends Duck Stat every 30 minutes
-  sendDuckStat(offline);
+   // Parses Civilian Requests into Data Structure
+   readData();
+   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
+   {
+     Serial.println("Start Send");
+     sendPayload(offline);
+     Serial.print("Sending Wifi Data from Mama\n");
+     offline = empty;
+     offline.fromCiv = 0;
+   }
 }
+
 #endif

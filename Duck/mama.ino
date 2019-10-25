@@ -1,4 +1,7 @@
 #ifdef MD
+#include "timer.h"
+
+auto timer = timer_create_default(); // create a timer with default settings
 
 void setup()
 {
@@ -7,18 +10,38 @@ void setup()
   iAm = "mama-duck";
   empty.whoAmI = "mama-duck";
   setupDuck();
+  offline.duckID = "V";
+  empty.duckID = "V";
 
-  setupDisplay();
+  //Setup interfaces
+  setupDisplay(); //Should probably turn off
   setupLoRa();
   setupPortal();
 
+  #ifdef MAMAQUACK
+  QuackPack = true;
+  setupQuack();
+  Serial.println("MamaQuack - Setup");
+  #endif
+
+  if(QuackPack == false) timer.every(1800000, imAlive); //Report still running
+  timer.every(43200000, reboot);
+  //timer.every(10800000, reboot);
+
   Serial.println("Mama Online");
   u8x8.drawString(0, 1, "Mama Online");
+  sendQuacks(empty.duckID, uuidCreator(), "1"); //Send data
 }
 
 void loop()
 {
-  // ⚠️ Parses Civilian Requests into Data Structure
+  if(QuackPack == true) {
+    //loopQuack();
+  } else {
+    timer.tick();
+  }
+
+  //Parses Civilian Requests into Data Structure
   readData();
   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
   {
@@ -30,8 +53,14 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  //  strstr(offline.path.toCharArray, empty.duckID) != NULL
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf(empty.duckID) < 0) {
+  if(offline.whoAmI == "quackpack" && offline.path.indexOf("V") < 0)
+  {
+    //Serial.println("Debug Test line 58" + offline.path);
+    sendQuacks(qtest.deviceID, qtest.messageID, qtest.payload);
+    offline.whoAmI = empty.whoAmI;
+    offline.path = empty.path;
+  }
+  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "" && offline.path.indexOf("V") < 0) {
     offline.path = offline.path + "," + empty.duckID;
     sendPayload(offline);
     Serial.print("I'm here");
@@ -39,9 +68,15 @@ void loop()
     sendPayload(offline);
     offline = empty;
   }
-
-  // Sends Duck Stat every 30 minutes
-  sendDuckStat(offline);
+  
 }
+
+bool imAlive(void *){
+  
+  sendQuacks(empty.duckID, uuidCreator(), "1"); //Send data
+  Serial.print("alive");
+  return true;
+}
+
 
 #endif
