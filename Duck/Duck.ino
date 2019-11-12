@@ -8,12 +8,18 @@
 #include <DNSServer.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-#include "indexBeta.h"
+#include "index.h"
 #include "credentials.h"
 
 /***************************************************
-  un/comment lines to compile Ducklink/Mama/Papa
+un/comment lines to compile Ducklink/Mama/Papa
 ***************************************************/
+
+bool QuackPack = false; //DONT TOUCH
+
+//Define if there is a quackPack for this device
+//#define QUACKPACK
+//#define MAMAQUACK //Only define if MD is defined
 
 // Recommendation First compile Mama board, then reverse and compile Papa board
 //#define DL
@@ -24,6 +30,9 @@ const char *AP = " 🆘 MAMA EMERGENCY PORTAL";
 
 //#define PD
 //const char *AP = " 🆘 PAPA EMERGENCY PORTAL";
+
+//#define DETECTOR
+//const char *AP = "remove dependancy"; //uncomment for detectorDuck
 
 #define THIRTYMIN (1000UL * 60 * 30);
 unsigned long rolltime = millis() + THIRTYMIN;
@@ -40,8 +49,8 @@ DNSServer dnsServer;
 const byte DNS_PORT = 53;
 
 /**
-   Hotspot/Access Point (🐥 DuckLink 🆘 )
-   Local DNS (duck.local)
+Hotspot/Access Point (🐥 DuckLink 🆘 )
+Local DNS (duck.local)
 */
 //const char *AP   = " 🆘 EMERGENCY PORTAL";
 
@@ -53,10 +62,12 @@ String id = "";
 String iAm = "Civ";
 String runTime;
 
+int rssi_g = 0;
+
 /**
-   Tracer for debugging purposes
-   Toggle (trace = 1) to print offlineements in Serial
-   Toggle (trace = 0) to turn off offlineements
+Tracer for debugging purposes
+Toggle (trace = 1) to print offlineements in Serial
+Toggle (trace = 0) to turn off offlineements
 */
 int trace         = 0;
 
@@ -91,6 +102,15 @@ typedef struct
   String path;
 } Data;
 
+typedef struct
+{
+  String deviceID;
+  String messageID;
+  String payload;
+} QuackTest;
+
+QuackTest qtest;
+
 Data offline;
 Data empty;
 
@@ -114,6 +134,13 @@ byte msg_B        = 0xE4;
 
 byte msgId_B      = 0xF4;
 byte path_B       = 0xF3;
+
+// QuackPack
+byte user_ID      = 0xF5;
+byte message_ID   = 0xF6;
+byte quacket_B    = 0xF7;
+
+byte iamhere      = 0xF8;
 
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
@@ -150,15 +177,15 @@ void setupLoRa()
 }
 
 /**
-   showReceivedstat
-   Displays Received stat on OLED and Serial Monitor
+showReceivedstat
+Displays Received stat on OLED and Serial Monitor
 */
 void showReceivedData()
 {
   /**
-     The total time it took for PAPA to create a packet,
-     send it to MAMA. MAMA parsing victim requests, and
-     send it back to PAPA.
+  The total time it took for PAPA to create a packet,
+  send it to MAMA. MAMA parsing victim requests, and
+  send it back to PAPA.
   */
   String waiting = String(millis() - lastSendTime);
 
@@ -215,14 +242,6 @@ void setupPortal()
     // ESP.restart();
   });
 
-  // webServer.on("/stat",[]()
-  // {
-  //   server.send(200,"text/plain", "Sending Status...");
-  //   dStat = true;
-  //   delay(1000);
-  //   ESP.restart();
-  // });
-
   webServer.on("/mac", []() {
     String    page = "<h1>Duck Mac Address</h1><h3>Data:</h3> <h4>" + offline.duckID + "</h4>";
     webServer.send(200, "text/html", page);
@@ -244,8 +263,8 @@ void setupPortal()
 }
 
 /**
-  restart
-  Only restarts ESP
+restart
+Only restarts ESP
 */
 void restartDuck()
 {
@@ -254,9 +273,9 @@ void restartDuck()
 }
 
 /**
-   readyData
-   Reads WebServer Parameters and couples into Data Struct
-   @return coupled Data Struct
+readyData
+Reads WebServer Parameters and couples into Data Struct
+@return coupled Data Struct
 */
 void readData()
 {
@@ -314,19 +333,39 @@ void couple(byte byteCode, String outgoing)
   LoRa.write(outgoing.length());      // add payload length
   LoRa.print(outgoing);               // add payload
 
-  //   Displays Sent Data on OLED and Serial Monitor
-  //   Serial.println("Parameter: " + outgoing);
 }
 
 /**
-   sendPayload
-   Sends Payload (offline Data Struct as Bytes)
-   Shows Sent Data
+sendPayload
+Sends Payload (offline Data Struct as Bytes)
+Shows Sent Data
 */
+
+void sendQuacks(String deviceID, String messageID, String payload)
+{
+  if(payload.length() > 140)
+  {
+    Serial.println("The length of the payload is too long.");
+  }
+  else
+  {
+    Serial.println("Sending Payload");
+    LoRa.beginPacket();
+    couple(user_ID, deviceID);
+    couple(message_ID, messageID);
+    couple(quacket_B, payload);
+    if(offline.path.indexOf(deviceID) < 0 && deviceID != empty.duckID) {
+      offline.path = deviceID;
+    }
+    couple(path_B, offline.path + "," + empty.duckID);
+    LoRa.endPacket();
+  }
+}
 
 void sendPayload(Data offline)
 {
   LoRa.beginPacket();
+
   couple(msgId_B, offline.messageId);
   couple(whoAmI_B, offline.whoAmI);
   couple(duckID_B, offline.duckID);
@@ -350,11 +389,8 @@ void sendPayload(Data offline)
   couple(msg_B, offline.msg);
 
   couple(path_B, offline.path);
+
   LoRa.endPacket();
-
-  msgCount++;                                   // increment message ID
-
-  delay(5000);
 }
 
 //Send duckStat every 30 minutes
@@ -416,17 +452,16 @@ String readMessages(byte mLength)
   {
     incoming += (char)LoRa.read();
   }
-  //Serial.println(incoming);
-
   return incoming;
 }
 // Mama and Papa
 
 /**
-   receive
-   Reads and Parses Received Packets
-   @param packetSize
+receive
+Reads and Parses Received Packets
+@param packetSize
 */
+
 void receive(int packetSize)
 {
   if (packetSize != 0)
@@ -448,8 +483,31 @@ void receive(int packetSize)
     {
       byteCode = LoRa.read();
       mLength  = LoRa.read();
+      if (byteCode == user_ID)
+      {
+        offline.whoAmI = "quackpack";
 
-      if (byteCode == whoAmI_B)
+        qtest.deviceID  = readMessages(mLength);
+        Serial.print(qtest.deviceID);
+      }
+      else if(byteCode == message_ID) {
+        qtest.messageID = readMessages(mLength);
+        Serial.print(qtest.messageID);
+      }
+      else if(byteCode == quacket_B) {
+        qtest.payload = readMessages(mLength);
+        Serial.print(qtest.payload);
+      }
+      else if (byteCode == iamhere) { //DetectorDuck
+        String ping = readMessages(mLength);
+        if(ping == "0") {
+          pong();
+        } else if(ping == "1" && empty.whoAmI == "duckDetector") {
+          Serial.println("Received pong");
+          rssi_g = rssi;
+        }
+      }
+      else if (byteCode == whoAmI_B)
       {
         offline.whoAmI = readMessages(mLength);
       }
@@ -507,8 +565,7 @@ void receive(int packetSize)
       }
       else if (byteCode == msg_B)
       {
-        offline.msg = readMessages(mLength) + rssi + ",";
-        offline.msg = offline.msg + snr + ",";
+        offline.msg = readMessages(mLength);
       }
       else if (byteCode == path_B)
       {
@@ -519,11 +576,43 @@ void receive(int packetSize)
         offline.messageId = readMessages(mLength);
       }
     }
-    showReceivedData();
-    //jsonify(offline);
   }
-  else
+
+  //showReceivedData();
+  //jsonify(offline);
+}
+
+String uuidCreator() {
+  byte randomValue;
+  char msg[50];     // Keep in mind SRAM limits
+  int numBytes = 0;
+  int i;
+
+  numBytes = atoi("8");
+  if(numBytes > 0)
   {
-    return;
+    memset(msg, 0, sizeof(msg));
+    for(i = 0; i < numBytes; i++) {
+      randomValue = random(0, 37);
+      msg[i] = randomValue + 'a';
+      if(randomValue > 26) {
+        msg[i] = (randomValue - 26) + '0';
+      }
+    }
   }
+
+  return String(msg);
+}
+
+bool reboot(void *){
+  sendQuacks(empty.duckID, uuidCreator(), "Reboot");
+  restartDuck();
+  
+  return true;
+}
+
+void pong() {
+  LoRa.beginPacket();
+  couple(iamhere, "1");
+  LoRa.endPacket();
 }

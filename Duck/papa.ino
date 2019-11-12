@@ -3,9 +3,15 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include "timer.h"
+
+auto timer = timer_create_default(); // create a timer with default settings
 
 WiFiClientSecure wifiClient;
 PubSubClient client(server, 8883, wifiClient);
+
+bool disconnected = false;
+double timeOff = 0;
 
 void setup()
 {
@@ -22,6 +28,8 @@ void setup()
   // setupPortal(); // Toggled Captive Portal from PapaDuck
 
   setupWiFi();
+
+  timer.every(10800000, reboot);
 
   Serial.println("PAPA Online");
   u8x8.drawString(0, 1, "PAPA Online");
@@ -43,6 +51,7 @@ void setupWiFi()
 
   while (WiFi.status() != WL_CONNECTED)
   {
+    timer.tick(); //Advance timer to reboot after awhile
     delay(500);
     Serial.print(".");
   }
@@ -61,11 +70,23 @@ void setupMQTT()
 {
   if (!!!client.connected())
   {
+    if(disconnected) {
+      timeOff = millis();
+    }
     Serial.print("Reconnecting client to "); Serial.println(server);
     while ( ! (ORG == "quickstart" ? client.connect(clientId) : client.connect(clientId, authMethod, token)))
     {
+      timer.tick(); //Advance timer to reboot after awhile
       Serial.print(".");
       delay(500);
+    }
+    if(disconnected) {
+      qtest.payload = "Papa disconnected from WiFi for:" + String(millis() - timeOff); //Record that lost wifi and then reconnected
+      papaHealth();  
+    }
+    else {
+      qtest.payload = "Papa disconnected from MQTT for:" + String(millis() - timeOff); //Record that lost connection to MQTT and then reconnected
+      //papaHealth();
     }
     Serial.println();
   }
@@ -75,11 +96,13 @@ void loop()
 {
   if(WiFi.status() != WL_CONNECTED)
   {
-    Serial.println("WiFi disconnected, reconnecting to local network");
+    Serial.print("WiFi disconnected, reconnecting to local network: ");
+    Serial.print(SSID);
     setupWiFi();
+    disconnected = false;
   }
   setupMQTT();
-  
+
   // ⚠️ Parses Civilian Requests into Data Structure
   readData();
   if (offline.fromCiv == 1 && offline.phone != NULL && offline.phone != "")
@@ -91,18 +114,24 @@ void loop()
   }
 
   receive(LoRa.parsePacket());
-  if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
+  if(offline.whoAmI == "quackpack")
+  {
+    quackJson();
+    offline.whoAmI = empty.whoAmI;
+  }
+  else if (offline.fromCiv == 0 && offline.phone != NULL && offline.phone != "")
   {
     offline.path = offline.path + "," + empty.duckID;
     Serial.println(offline.path);
     jsonify(offline);
-    duckData(offline);
+    //duckData(offline);
     u8x8.setCursor(0, 16);
     u8x8.print("Name: " + offline.fname);
     Serial.print("Parsing LoRa Data");
     offline = empty;
   }
 
+  timer.tick();
 }
 
 /**
@@ -117,32 +146,27 @@ void jsonify(Data offline)
 
   JsonObject& root = jsonBuffer.createObject();
 
-  root["uuid"]                 = offline.messageId;
+  root["DeviceID"]        = offline.duckID;
+  root["MessageID"]       = offline.messageId;
+  root["Payload"]         = offline.fname + "*" + 
+                            offline.phone + "*" +
+                            offline.street + "*" +
+                            offline.occupants + "*" +
+                            offline.danger + "*" +
+                            offline.vacant + "*" +
+                            offline.firstaid + "*" +
+                            offline.water + "*" +
+                            offline.food + "*" +
+                            offline.msg + "*";
 
-  JsonObject& civilian = root.createNestedObject("civilian");
+  root["path"]            = offline.path;
 
-  JsonObject& civilian_info   = civilian.createNestedObject("info");
-  civilian_info["name"]       = offline.fname;
-  civilian_info["phone"]      = offline.phone;
-  civilian_info["location"]   = offline.street;
-  civilian_info["occupants"]  = offline.occupants;
-
-  JsonObject& civilian_status = civilian.createNestedObject("status");
-  civilian_status["danger"]   = offline.danger;
-  civilian_status["vacant"]   = offline.vacant ;
-
-  JsonObject& civilian_need   = civilian.createNestedObject("needs");
-  civilian_need["first-aid"]  = offline.firstaid;
-  civilian_need["water"]      = offline.water;
-  civilian_need["food"]       = offline.food;
-  civilian["message"]         = offline.msg;
-
-  root["path"]                = offline.path;
+  offline.path = "";
 
   String jsonstat;
   root.printTo(jsonstat);
   root.prettyPrintTo(Serial);
-  
+
   if (client.publish(topic, jsonstat.c_str()))
   {
     Serial.println("Publish ok");
@@ -174,48 +198,60 @@ void duckData(Data offline)
 
   String jsonstat;
   root.printTo(jsonstat);
-  
-//  if (client.publish(topic2, jsonstat.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
 }
 
 String makeId() {
   char items[] = "0123456789abcdefghijklmnopqrstuvwxyz";
   char uuid[9];
 
-  for(int i = 0; i <= 3; i++) {
+  for(int i = 0; i <= 3; i++)
+  {
     uuid[i] = items[random(0,35)];
   }
   uuid[9] = '\0';
 
   String str = String(uuid);
-  
+
   return  str;
-  
+
 }
 
+void papaHealth() {
+  qtest.deviceID = empty.whoAmI;
+  qtest.messageID = uuidCreator();
+  quackJson();
+}
+
+void quackJson()
+{
+  const int bufferSize = 4 * JSON_OBJECT_SIZE(1);
+  DynamicJsonBuffer jsonBuffer(bufferSize);
+
+  JsonObject& root = jsonBuffer.createObject();
 
 
-//void publishData(String data)
-//{
-//  if (client.publish(topic, data.c_str()))
-//  {
-//    Serial.println("Publish ok");
-//    root.prettyPrintTo(Serial);
-//    Serial.println("");
-//  }
-//  else
-//  {
-//    Serial.println("Publish failed");
-//  }
-//}
+  root["DeviceID"]        = qtest.deviceID;
+  root["MessageID"]       = qtest.messageID;
+  root["Payload"]         = qtest.payload;
+
+  root["path"]            = offline.path + "," + empty.duckID;
+
+  offline.path = "";
+
+  String jsonstat;
+  root.printTo(jsonstat);
+  root.prettyPrintTo(Serial);
+
+  if (client.publish(topic, jsonstat.c_str()))
+  {
+    Serial.println("Publish ok");
+    root.prettyPrintTo(Serial);
+    Serial.println("");
+  }
+  else
+  {
+    Serial.println("Publish failed");
+  }
+}
 
 #endif
