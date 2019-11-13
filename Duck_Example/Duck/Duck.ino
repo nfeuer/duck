@@ -9,7 +9,6 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include "index.h"
-#include "credentials.h"
 
 bool QuackPack = false; //DONT TOUCH
 
@@ -19,7 +18,8 @@ bool QuackPack = false; //DONT TOUCH
  *  =============================================
  */
 
-
+#define DL
+const char *AP = " 🆘 DUCK EMERGENCY PORTAL";
 
 /* 
  *  =============================================
@@ -45,6 +45,8 @@ const byte DNS_PORT = 53;
 Hotspot/Access Point (🐥 DuckLink 🆘 )
 Local DNS (duck.local)
 */
+//const char *AP   = " 🆘 EMERGENCY PORTAL";
+
 
 const char *DNS  = "duck";
 
